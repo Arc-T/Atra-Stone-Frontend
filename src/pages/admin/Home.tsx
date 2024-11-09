@@ -1,6 +1,6 @@
 import atra from "../../assets/images/atra.jpg";
-
 export default function Home() {
+
     return (
         <div className="grid grid-cols-6 gap-4 drop-shadow-lg">
             <div className="col-span-4 bg-amber-300 rounded-md flex p-4 shadow-lg">
@@ -57,15 +57,4 @@ export default function Home() {
 
     );
 
-}
-
-{/*<h1 className="text-3xl font-bold">به داشبورد خوش آمدید</h1>*/
-}
-{/*<p className="mt-4 text-gray-600">*/
-}
-{/*  This is where your main content will be displayed. You can add different*/
-}
-{/*  components here or use React Router to navigate between different pages.*/
-}
-{/*</p>*/
 }

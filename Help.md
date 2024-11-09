@@ -4,3 +4,5 @@
 4-React Query Dev Tools : npm i @tanstack/react-query-devtools
 5-Zustand : npm i zustand
 6-React Router : npm i react-router-dom
+
+TODO: check user token shouldn't be in Home. 
