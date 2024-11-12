@@ -6,7 +6,23 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import router from "./router.tsx";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+
+      staleTime: 10 * 60 * 1000, // 10 minutes
+
+      refetchOnWindowFocus: false,
+
+      refetchOnMount: false,
+
+      retry: 2,
+
+      // Automatically retry queries that fail due to network errors
+      networkMode: 'online', // Only run queries when the network is online
+    },
+  },
+});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,4 +32,3 @@ createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </StrictMode>
 );
-  
