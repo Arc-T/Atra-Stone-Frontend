@@ -3,10 +3,10 @@ import {
   Basket,
   Cart,
   Clipboard2Data,
-  HouseDoorFill,
+  HouseDoor,
 } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
+import SidebarItems from "../../components/SidebarItems";
 
 interface Props {
   isOpen: boolean;
@@ -16,7 +16,7 @@ const Aside = ({ isOpen }: Props) => {
   const location = useLocation();
 
   const menuItems = [
-    { label: "خانه", path: "home", icon: HouseDoorFill },
+    { label: "خانه", path: "home", icon: HouseDoor },
     { label: "محصولات", path: "products", icon: Cart },
     { label: "سفارشات", path: "orders", icon: Basket },
     { label: "تخفیفات", path: "settings", icon: Award },
@@ -38,7 +38,7 @@ const Aside = ({ isOpen }: Props) => {
       <ul>
         {menuItems.map(({ label, path, icon }) => (
           <Link to={path} key={path}>
-            <Sidebar
+            <SidebarItems
               icon={icon}
               label={label}
               path={path}

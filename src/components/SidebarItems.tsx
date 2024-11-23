@@ -4,10 +4,9 @@ interface SidebarItemProps {
   path: string;
 }
 
-const Sidebar = ({
+const SidebarItems = ({
   icon: Icon,
   label,
-  path,
   isActive,
 }: SidebarItemProps & { isActive: boolean }) => (
   <li
@@ -23,4 +22,4 @@ const Sidebar = ({
   </li>
 );
 
-export default Sidebar;
+export default SidebarItems;

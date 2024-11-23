@@ -54,7 +54,6 @@ export default function Home() {
                 {/* Placeholder for additional content */}
             </div>
         </div>
-
     );
 
 }

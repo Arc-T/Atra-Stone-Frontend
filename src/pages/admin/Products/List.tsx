@@ -11,7 +11,7 @@ const List = () => {
     error,
   } = useQuery<Products[]>({
     queryKey: ["products"],
-    queryFn: () => api.getRequest<Products>(),
+    queryFn: () => api.getRequest<Products[]>(),
   });
 
   return (

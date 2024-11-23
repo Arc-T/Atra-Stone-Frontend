@@ -8,7 +8,6 @@ interface Props {
 }
 
 export default function Navbar({ toggleSidebar }: Props) {
-
   const navigate = useNavigate();
 
   const [profileMenu, setProfileMenu] = useState(false);
@@ -22,6 +21,7 @@ export default function Navbar({ toggleSidebar }: Props) {
     <nav className="bg-white py-2 px-4 rounded-lg drop-shadow-lg">
       <div className="flex justify-between items-center">
         <div className="text-gray-700 font-bold">My App</div>
+
         {/* Button to toggle the sidebar */}
         <button className="text-white xl:hidden" onClick={toggleSidebar}>
           <svg
@@ -40,14 +40,13 @@ export default function Navbar({ toggleSidebar }: Props) {
           </svg>
         </button>
 
+        {/* Search Bar */}
         <div className="relative flex items-center">
-          {/* Icon positioned absolutely inside the input container */}
           <Search
             className="absolute left-4 text-gray-500"
             height={20}
             width={20}
           />
-
           <input
             type="text"
             className="bg-slate-200 pl-60 pr-4 rounded-md py-2"
@@ -55,11 +54,11 @@ export default function Navbar({ toggleSidebar }: Props) {
           />
         </div>
 
+        {/* Profile Section */}
         <div className="flex items-center gap-8">
           <MoonStars height={20} width={20} className="text-gray-700" />
           <Bell height={20} width={20} className="text-gray-700" />
           <div className="relative inline-block">
-            {/* Profile Image */}
             <img
               src={profile}
               className="w-12 h-12 rounded-full cursor-pointer transition-transform duration-200 hover:scale-105"
@@ -67,10 +66,10 @@ export default function Navbar({ toggleSidebar }: Props) {
               onClick={() => setProfileMenu(!profileMenu)}
             />
 
-            {/* Dropdown Menu */}
+            {/* Profile Dropdown */}
             {profileMenu && (
               <div
-                className="absolute left-3 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-40 z-1"
+                className="fixed left-3 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-40 z-1"
                 style={{ top: "100%" }}
               >
                 <button

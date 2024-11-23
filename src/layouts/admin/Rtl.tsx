@@ -19,29 +19,31 @@ export default function Rtl() {
 
   return (
     <>
-      {/* <Drawer isDrawerOpen={isDrawerOpen} onDrawerClick={toggleDrawer} /> */}
-
       <div className="flex h-screen">
-        {/* Sidebar: Hidden on small devices */}
+
         <Sidebar isOpen={isSidebarOpen} />
 
-        {/* Main section: navbar and content */}
-        <div className="flex flex-col flex-1 p-4 bg-slate-50">
-          {/* Navbar */}
+        <div className="flex flex-col flex-1 p-4 bg-slate-50 ">
+
           <Navbar toggleSidebar={toggleSidebar} />
 
-          {/* Main Content */}
           <main className="flex-1 mt-4">
             <Outlet />
           </main>
-        </div>
 
-        {/* <button
-          onClick={toggleDrawer}
-          className="fixed bottom-4 left-4 w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        /> */}
-        
+        </div>
       </div>
     </>
   );
+}
+
+{
+  /* <Drawer isDrawerOpen={isDrawerOpen} onDrawerClick={toggleDrawer} /> */
+}
+
+{
+  /* <button
+          onClick={toggleDrawer}
+          className="fixed bottom-4 left-4 w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        /> */
 }
