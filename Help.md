@@ -6,6 +6,7 @@
 6-Zustand : npm i zustand
 7-Dropzone: npm install react-dropzone
 8-Multi-select: npm install react-tailwindcss-select
+9-Toastify: npm i react-toastify
 
 /\*\*
 ** TODO: check user token shouldn't be in Home. \*** \*_ TODO: stale strategy of queries should be handled

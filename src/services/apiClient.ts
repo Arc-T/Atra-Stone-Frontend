@@ -59,6 +59,13 @@ class ApiClient {
       .then((response) => response.data)
       .catch((error) => error);
   }
+  
+  deleteRequest<T>(requestBody?: object) {
+    return axiosInstance
+      .delete<T[]>(this.endpoint, requestBody)
+      .then((response) => response.data)
+      .catch((error) => error);
+  }
 }
 
 export default ApiClient;

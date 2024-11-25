@@ -1,16 +1,16 @@
 // FileDropzone.tsx
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import Dropzone from "react-dropzone";
 
 type FileWithPreview = File & { preview: string };
 
 interface FileDropzoneProps {
-  onFilesChange: (files: File[]) => void; // Callback to pass selected files to parent
+  onFilesChange: (files: File[]) => void; 
 }
 
-const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesChange }) => {
+const FileDropzone = ({ onFilesChange }: FileDropzoneProps) => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [hero, setHero] = useState(-1);
+  const [hero, setHero] = useState(0);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -26,13 +26,12 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesChange }) => {
   const handleDelete = (file: FileWithPreview) => {
     const updatedFiles = files.filter((f) => f !== file);
     setFiles(updatedFiles);
-    onFilesChange(updatedFiles); // Update parent
-    console.log(hero);
+    onFilesChange(updatedFiles);
   };
 
   return (
     <div className="dropzone-container">
-      <div className="border-2 border-dashed border-gray-400 rounded-lg p-4 text-center cursor-pointer">
+      <div className="border-2 border-dashed border-gray-400 rounded-sm p-4 text-center cursor-pointer">
         <Dropzone onDrop={onDrop}>
           {({ getRootProps, getInputProps }) => (
             <div {...getRootProps()} className="cursor-pointer">
@@ -65,7 +64,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesChange }) => {
             <input type="hidden" name="hero_image" value={hero} />
             <button
               onClick={() => {
-                setHero(-1);
+                setHero(0);
                 handleDelete(file);
               }}
               className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"

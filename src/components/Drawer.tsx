@@ -4,6 +4,11 @@
 //   isDrawerOpen: boolean;
 //   onDrawerClick(): void;
 // }
+  // const [isDrawerOpen, setDrawerOpen] = useState(false);
+  // const toggleDrawer = () => {
+  //   setDrawerOpen(!isDrawerOpen);
+  // };
+  /* <Drawer isDrawerOpen={isDrawerOpen} onDrawerClick={toggleDrawer} /> */
 
 // const Drawer = ({ isDrawerOpen, onDrawerClick }: Props) => {
 

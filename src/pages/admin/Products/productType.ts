@@ -3,5 +3,7 @@ export interface Products {
   title: string;
   price: number;
   count: number;
+  path: string;
   description?: string;
+  createdAt: string;
 }

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import ApiClient from "../../../services/apiClient";
 import { AxiosError } from "axios";
@@ -15,7 +15,7 @@ import {
   Attributes,
 } from "../../../types/Admin";
 import FileDropzone from "../../../components/Dropzone";
-
+import { toast } from "react-toastify";
 interface DataResponse {
   tags: Tag[];
   services: Service[];
@@ -29,24 +29,22 @@ const Create = () => {
   const price = useRef<HTMLInputElement>(null);
   const description = useRef<HTMLTextAreaElement>(null);
 
-  const [files, setFiles] = useState<File[]>([]);
-  const [attributes, setAttribute] = useState<Attributes[]>([]);
-  const [tags, setTags] = useState<SelectValue>(null);
-  const [category, setCategory] = useState("");
-  const [service, setService] = useState("");
-
   const apiCall = new ApiClient("products/create");
+  const queryClient = useQueryClient();
 
-  const [responseData, setResponseData] = useState<{
-    services: Service[];
-    attributesGroup: AttributeGroup[];
-    categories: Category[];
-    tags: Option[];
-  }>({
-    services: [],
-    attributesGroup: [],
-    categories: [],
-    tags: [],
+  const [formState, setFormState] = useState({
+    files: [] as File[],
+    attributes: [] as Attributes[],
+    tags: null as SelectValue,
+    category: "",
+    service: "",
+  });
+
+  const [responseData, setResponseData] = useState({
+    services: [] as Service[],
+    attributesGroup: [] as AttributeGroup[],
+    categories: [] as Category[],
+    tags: [] as Option[],
   });
 
   useEffect(() => {
@@ -69,69 +67,66 @@ const Create = () => {
   }, []);
 
   const onAttributeGroupChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const selectedGroup = event.target.value;
     apiCall
-      .setEndpoint("attributes/" + event.target?.value + "/show")
+      .setEndpoint(`attributes/${selectedGroup}/show`)
       .getRequest<Attributes[]>()
-      .then((data) => {
-        if (data) {
-          setAttribute(data);
-        }
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+      .then((data) =>
+        setFormState((prev) => ({ ...prev, attributes: data || [] }))
+      )
+      .catch((error) => console.error("Error fetching attributes:", error));
   };
 
   const postProductForm = useMutation({
-    mutationFn: (files: FormData) => {
+    mutationFn: (formData: FormData) => {
       apiCall.setEndpoint("products/store");
-      return apiCall.postRequest(files, {
+      return apiCall.postRequest(formData, {
         "Content-type": "multipart/form-data",
       });
     },
     onSuccess: (response) => {
-      console.log(response);
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+        exact: true,
+      });
+      toast.success("عملیات با موفقیت انجام شد !",
+      {bodyClassName:"text-lg font-black"});
     },
     onError: (error: AxiosError) => {
-      console.log(error.status);
+      toast.error("در انجام عملیات خطایی رخ داده است !");
     },
   });
 
-  const handleFormRequest = (event: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
       const formData = new FormData(event.currentTarget);
 
-      const attributeValues: { [key: string]: string } = {};
+      const attributes = formState.attributes.reduce((acc, attr) => {
+        const value = formData.get(`attribute_${attr.id}`) || "";
+        if (value) acc[attr.id] = value.toString();
+        return acc;
+      }, {} as { [key: string]: string });
 
-      for (const [key, value] of formData.entries()) {
-        if (key.startsWith("attribute_")) {
-          const newKey = key.replace("attribute_", "");
-          attributeValues[newKey] = value.toString();
-        }
-      }
-
-      files.forEach((file) => {
-        formData.append("files", file);
-      });
-      const heroImage = formData.get("hero_image");
-      const tag = Array.isArray(tags) ? tags.map(({ value }) => value) : [];
+      formState.files.forEach((file) => formData.append("files", file));
 
       const metadata = {
         title: title.current?.value,
         count: count.current?.value,
         price: price.current?.value.replace(/,/g, ""),
-        category: category,
-        service: service,
+        category: formState.category,
+        service: formState.service,
         description: description.current?.value,
-        attributes: attributeValues,
-        hero_image: heroImage,
-        tags: tag,
+        attributes: attributes,
+        hero_image: formData.get("hero_image"),
+        tags: Array.isArray(formState.tags)
+          ? formState.tags.map(({ value }) => value)
+          : [],
       };
-
       console.log(metadata);
 
       formData.append("metadata", JSON.stringify(metadata));
-
       postProductForm.mutate(formData);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -143,25 +138,16 @@ const Create = () => {
       <form
         method="POST"
         encType="multipart/form-data"
-        onSubmit={handleFormRequest}
+        onSubmit={handleFormSubmit}
       >
         <div className="flex flex-col gap-6 my-4">
           <div className="flex flex-row gap-4">
             {/* Name Input */}
             <div className="flex flex-col w-1/5">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-900"
-              >
+              <label className="block text-sm font-medium text-gray-900">
                 نام
               </label>
-              <input
-                type="text"
-                ref={title}
-                id="name"
-                className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                placeholder="عقیق منظره"
-              />
+              <input type="text" ref={title} className="styled-input" />
             </div>
 
             <div className="flex flex-col w-1/12">
@@ -177,7 +163,7 @@ const Create = () => {
                 id="number"
                 min={0}
                 placeholder="0"
-                className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
+                className="styled-input"
               />
             </div>
 
@@ -198,7 +184,7 @@ const Create = () => {
                     event.target.value = Number(value).toLocaleString();
                   }
                 }}
-                className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
+                className="styled-input"
               />
             </div>
 
@@ -208,8 +194,10 @@ const Create = () => {
               </label>
               <select
                 defaultValue={"0"}
-                className="block mt-1 w-full py-1.5 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
-                onChange={(event) => setCategory(event.target.value)}
+                className="styled-input"
+                onChange={(event) =>
+                  setFormState({ ...formState, category: event.target.value })
+                }
               >
                 <option value={"0"}>انتخاب کنید ...</option>
                 {responseData.categories?.map((category, index) => (
@@ -226,8 +214,10 @@ const Create = () => {
               </label>
               <select
                 defaultValue={"0"}
-                className="block mt-1 w-full py-1.5 px-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
-                onChange={(event) => setService(event.target.value)}
+                className="styled-input"
+                onChange={(event) =>
+                  setFormState({ ...formState, service: event.target.value })
+                }
               >
                 <option value={"0"}>انتخاب کنید ...</option>
                 {responseData.services?.map((service, index) => (
@@ -241,12 +231,14 @@ const Create = () => {
 
           <div className="flex flex-row w-full gap-4">
             <div className="flex flex-col w-1/2">
-              <label className="block text-sm font-medium text-gray-900 mb-1">
+              <label className="block text-sm font-medium text-gray-900 mt-1">
                 تگ ها
               </label>
               <Select
-                value={tags}
-                onChange={(value: SelectValue) => setTags(value)}
+                value={formState.tags}
+                onChange={(value) =>
+                  setFormState({ ...formState, tags: value })
+                }
                 options={responseData.tags}
                 primaryColor={"indigo"}
                 isSearchable={true}
@@ -268,7 +260,7 @@ const Create = () => {
               </label>
               <select
                 defaultValue={"0"}
-                className="block mt-1 w-full py-1.5 px-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+                className="styled-input"
                 onChange={onAttributeGroupChange}
               >
                 <option value={"0"}>انتخاب کنید ...</option>
@@ -296,8 +288,8 @@ const Create = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {attributes.length > 0 &&
-                      attributes.map((attr, index) => (
+                    {formState.attributes.length > 0 &&
+                      formState.attributes.map((attr, index) => (
                         <tr
                           key={index}
                           className={`border-b ${
@@ -315,19 +307,11 @@ const Create = () => {
                               name={`attribute_${attr.id}`}
                               placeholder="مقدار را با هر نوع اطلاعات بیشتر پر کنید"
                               type="text"
-                              className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
+                              className="styled-input"
                             />
                           </td>
                         </tr>
                       ))}
-                    {/* <tr>
-                        <td
-                          colSpan={5}
-                          className="text-center py-4 px-6 text-gray-500"
-                        >
-                          خطایی در دریافت اطلاعات رخ داده است !
-                        </td>
-                      </tr> */}
                   </tbody>
                 </table>
               </div>
@@ -339,13 +323,9 @@ const Create = () => {
               <label className="block text-sm/6 font-medium text-gray-900">
                 تصاویر
               </label>
-              <FileDropzone onFilesChange={(event) => setFiles(event)} />
-              {/* <div className="text-center">
-                <div className="border-2 border-dashed border-purple-400 rounded-lg p-5 cursor-pointer hover:bg-blue-50">
-                  <p className="text-5xl text-purple-800">تصاویر / ویدئو ها</p>
-                  <input type="file" multiple ref={fileRef} />
-                </div>
-              </div> */}
+              <FileDropzone
+                onFilesChange={(files) => setFormState({ ...formState, files })}
+              />
             </div>
 
             <div className="flex flex-col w-1/2">
@@ -355,7 +335,7 @@ const Create = () => {
               <textarea
                 ref={description}
                 rows={7}
-                className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
+                className="styled-input"
               ></textarea>
             </div>
           </div>

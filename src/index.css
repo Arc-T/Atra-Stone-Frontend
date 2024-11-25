@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  .styled-input {
+    @apply flex w-full text-sm text-gray-500 border border-gray-300 rounded shadow-sm transition-all duration-300 focus:outline-none bg-white hover:border-gray-400 focus:border-indigo-500 focus:ring focus:ring-indigo-500/20 py-2 px-3 mt-1;
+  }
   @font-face {
     font-family: "Vazirmatn";
     font-style: normal;
@@ -51,11 +54,11 @@
     src: url(assets/fonts/Shabnam-Bold-FD.woff2) format("woff2"),
       url(assets/fonts/Shabnam-Bold-FD.woff) format("woff");
   }
-  html {
+  *{
     font-family: "Vazirmatn", "Shabnam";
   }
   .menu-background {
-    background-color: #FF2D55;
+    background-color: #ff2d55;
     border-radius: 8px;
   }
 }
