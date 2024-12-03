@@ -1,8 +1,8 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:8080/api/v1/",
-  timeout: 3000,
+  timeout: 2000,
 });
 
 // axiosInstance.interceptors.response.use(
@@ -48,23 +48,31 @@ class ApiClient {
   getRequest<T>(headers?: object) {
     return axiosInstance
       .get<T>(this.endpoint, headers ? { headers } : undefined)
-      .then((response) => {
-        return response.data;
-      });
+      .then((response) => response.data);
   }
 
   postRequest<T>(requestBody?: object, headers?: object) {
     return axiosInstance
-      .post<T[]>(this.endpoint, requestBody, headers ? { headers } : undefined)
-      .then((response) => response.data)
-      .catch((error) => error);
+      .post<T>(this.endpoint, requestBody, headers ? { headers } : undefined)
+      .then((response) => response.data);
   }
-  
+
   deleteRequest<T>(requestBody?: object) {
     return axiosInstance
-      .delete<T[]>(this.endpoint, requestBody)
-      .then((response) => response.data)
-      .catch((error) => error);
+      .delete<T>(this.endpoint, { data: requestBody })
+      .then((response) => response.data);
+  }
+
+  patchRequest<T>(requestBody?: object, headers?: object) {
+    return axiosInstance
+      .patch<T>(this.endpoint, requestBody, headers ? { headers } : undefined)
+      .then((response) => response.data);
+  }
+
+  putRequest<T>(requestBody?: object, headers?: object) {
+    return axiosInstance
+      .put<T>(this.endpoint, requestBody, headers ? { headers } : undefined)
+      .then((response) => response.data);
   }
 }
 

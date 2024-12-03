@@ -5,12 +5,13 @@ import Dropzone from "react-dropzone";
 type FileWithPreview = File & { preview: string };
 
 interface FileDropzoneProps {
-  onFilesChange: (files: File[]) => void; 
+  onFilesChange: (files: File[]) => void;
+  hasHero: boolean;
 }
 
-const FileDropzone = ({ onFilesChange }: FileDropzoneProps) => {
+const FileDropzone = ({ onFilesChange, hasHero }: FileDropzoneProps) => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [hero, setHero] = useState(0);
+  const [hero, setHero] = useState(-1);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -64,7 +65,7 @@ const FileDropzone = ({ onFilesChange }: FileDropzoneProps) => {
             <input type="hidden" name="hero_image" value={hero} />
             <button
               onClick={() => {
-                setHero(0);
+                if (!hasHero) setHero(0);
                 handleDelete(file);
               }}
               className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
@@ -76,7 +77,7 @@ const FileDropzone = ({ onFilesChange }: FileDropzoneProps) => {
                 onClick={() => setHero(index)}
                 className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
               >
-                عکس اصلی
+                پس زمینه
               </button>
             )}
           </div>

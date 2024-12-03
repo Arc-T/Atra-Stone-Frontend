@@ -1,15 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ApiClient from "../../../services/apiClient.ts";
-import { Products } from "./productType.ts";
 import { useState } from "react";
 import { Modal } from "../../../components/Modal.tsx";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import { Products } from "../../../types/Admin.ts";
 
 const List = () => {
-  
-const api = new ApiClient("/products/list");
+  const api = new ApiClient("/products/list");
+
   const queryClient = useQueryClient();
+
   const {
     data: products,
     isLoading,
@@ -20,6 +22,7 @@ const api = new ApiClient("/products/list");
     staleTime: Infinity,
     refetchOnMount: true,
   });
+
   const [selectedProduct, setSelectedProduct] = useState<{
     id: number;
     name: string;
@@ -104,9 +107,7 @@ const api = new ApiClient("/products/list");
                     <td className="text-right py-4 px-6 border-l border-gray-200 text-gray-700 flex items-center justify-start">
                       <img
                         className="w-12 h-12 rounded-full ml-2" // Added margin-right to space between image and text
-                        src={`http://localhost:8080/images/products/${encodeURIComponent(
-                          product.path
-                        )}`}
+                        src={`http://localhost:8080/medias/products/${product.id}/${product.name}`}
                       />
                       {product.title}
                     </td>
@@ -121,9 +122,11 @@ const api = new ApiClient("/products/list");
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex justify-center items-center ms-2">
-                        <button className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150">
-                          نمایش
-                        </button>
+                        <Link
+                          to={`/admin/products/${product.id}/edit`}
+                          className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150">
+                          ویرایش
+                        </Link>
                         <button
                           onClick={() => {
                             setSelectedProduct({

@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import ApiClient from "../../../services/apiClient";
-import { AxiosError } from "axios";
 import Select from "react-tailwindcss-select";
 import {
   Option,
@@ -11,17 +10,12 @@ import {
   AttributeGroup,
   Category,
   Service,
-  Tag,
   Attributes,
+  DataResponse,
 } from "../../../types/Admin";
 import FileDropzone from "../../../components/Dropzone";
 import { toast } from "react-toastify";
-interface DataResponse {
-  tags: Tag[];
-  services: Service[];
-  categories: Category[];
-  attributes_group: AttributeGroup[];
-}
+import { AxiosError } from "axios";
 
 const Create = () => {
   const title = useRef<HTMLInputElement>(null);
@@ -63,7 +57,7 @@ const Create = () => {
           });
         }
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((error:AxiosError) => toast.error("در دریافت اطلاعات خطایی رخ داده است !"));
   }, []);
 
   const onAttributeGroupChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -92,7 +86,7 @@ const Create = () => {
       toast.success("عملیات با موفقیت انجام شد !",
       {bodyClassName:"text-lg font-black"});
     },
-    onError: (error: AxiosError) => {
+    onError: (error:AxiosError) => {
       toast.error("در انجام عملیات خطایی رخ داده است !");
     },
   });

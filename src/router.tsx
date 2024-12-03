@@ -6,7 +6,7 @@ import List from "./pages/admin/Products/List.tsx";
 import Index from "./pages/admin/Products/Index.tsx";
 import CheckToken from "./middleware/CheckToken.tsx";
 import Create from "./pages/admin/Products/Create.tsx";
-import Settings from "./pages/admin/Products/Settings.tsx";
+import Edit from "./pages/admin/Products/Edit.tsx";
 
 const router = createBrowserRouter([
   {
@@ -35,8 +35,8 @@ const router = createBrowserRouter([
             element: <Create />,
           },
           {
-            path: "setting",
-            element: <Settings />,
+            path: ":productId?/edit",
+            element: <Edit />,
           },
         ],
       },

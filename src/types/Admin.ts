@@ -1,6 +1,22 @@
+export interface Products {
+  id: number;
+  title: string;
+  price: number;
+  count: number;
+  name: string;
+  description?: string;
+  createdAt: string;
+}
+
 export interface Attributes {
   id: number;
   title: string;
+}
+
+export interface AttributeValue {
+  id: number;
+  title: string;
+  attribute_value: string;
 }
 
 export interface AttributeGroup {
@@ -22,7 +38,22 @@ export interface Service {
   createdAt: string;
 }
 
+export interface ProductMedia {
+  id: number;
+  name: string;
+  isHero: boolean;
+  extension: string;
+  uploadedAt: string;
+}
+
 export interface Category {
   id: number;
   title: string;
+}
+
+export interface DataResponse {
+  tags: Tag[];
+  services: Service[];
+  categories: Category[];
+  attributes_group: AttributeGroup[];
 }

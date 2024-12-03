@@ -14,7 +14,7 @@ export default function Rtl() {
   return (
     <>
       <div className="flex h-screen">
-        <ToastContainer position="top-right" rtl={true}/>
+        <ToastContainer position="top-left" rtl={true}/>
         <Sidebar isOpen={isSidebarOpen} />
         <div className="flex flex-col flex-1 p-4 bg-slate-50 ">
           <Navbar toggleSidebar={toggleSidebar} />

@@ -2,15 +2,14 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function Index() {
-
   const tabs = [
     { label: "لیست محصولات", path: "list" },
     { label: "ایجاد محصولات", path: "create" },
-    { label: "تنظیمات محصولات", path: "setting" },
+    { label: "ویرایش محصول", path: "edit" },
   ];
 
   const location = useLocation();
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
