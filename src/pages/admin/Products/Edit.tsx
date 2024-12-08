@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import FileDropzone from "../../../components/Dropzone";
 import Select from "react-tailwindcss-select";
 import { Modal } from "../../../components/Modal";
+import { formatPrice } from "../../../services/productService";
 
 interface Response {
   details: ProductInfo;
@@ -59,17 +60,26 @@ export default function Edit() {
     service: "",
   });
 
-  const [dataResponse, setDataResponse] = useState({
-    services: [] as Service[],
-    attributesGroup: [] as AttributeGroup[],
-    categories: [] as Category[],
-    tags: [] as Option[],
+  const [dataResponse, setDataResponse] = useState<{
+    services: Service[];
+    attributesGroup: AttributeGroup[];
+    categories: Category[];
+    tags: Option[];
+  }>({
+    services: [],
+    attributesGroup: [],
+    categories: [],
+    tags: [],
   });
 
-  const [productInfo, setProductInfo] = useState({
+  const [productInfo, setProductInfo] = useState<{
+    details: ProductInfo;
+    attributes: AttributeValue[];
+    medias: ProductMedia[];
+  }>({
     details: {} as ProductInfo,
-    attributes: [] as AttributeValue[],
-    medias: [] as ProductMedia[],
+    attributes: [],
+    medias: [],
   });
 
   const { productId } = useParams();
@@ -81,35 +91,35 @@ export default function Edit() {
   const apiCall = new ApiClient("");
 
   useEffect(() => {
-    apiCall
-      .setEndpoint(`/products/${productId}/edit`)
-      .getRequest<Response>()
-      .then((dataResponse) => {
-        setProductInfo({
-          attributes: dataResponse.attributes,
-          details: dataResponse.details,
-          medias: dataResponse.medias,
-        });
-        setFormState({
-          ...formState,
-          tags: dataResponse.tags.map((tag) => ({
-            value: tag.id.toString(),
-            label: tag.title,
-            isSelected: true,
-          })),
-        });
-      })
-      .catch((error: AxiosError) =>
-        toast.error("در دریافت اطلاعات خطایی رخ داده است !")
-      );
-  }, [productId]);
+    if (productId) {
+      apiCall
+        .setEndpoint(`/products/${productId}/edit`)
+        .getRequest<Response>()
+        .then((dataResponse) => {
+          setProductInfo({
+            attributes: dataResponse.attributes,
+            details: dataResponse.details,
+            medias: dataResponse.medias,
+          });
 
-  useEffect(() => {
-    apiCall
-      .setEndpoint("products/create")
-      .getRequest<DataResponse>()
-      .then((dataResponse) => {
-        if (dataResponse) {
+          setFormState((prev) => ({
+            ...prev,
+            tags: dataResponse.tags.map((tag) => ({
+              value: tag.id.toString(),
+              label: tag.title,
+              isSelected: true,
+            })),
+          }));
+        })
+        .catch((error: AxiosError) => {
+          toast.error("خطا در دریافت اطلاعات ویرایش!");
+          console.log(error);
+        });
+
+      apiCall
+        .setEndpoint("/products/create")
+        .getRequest<DataResponse>()
+        .then((dataResponse) => {
           setDataResponse({
             services: dataResponse.services,
             attributesGroup: dataResponse.attributes_group,
@@ -119,12 +129,13 @@ export default function Edit() {
               label: tag.title,
             })),
           });
-        }
-      })
-      .catch((error: AxiosError) =>
-        toast.error("در دریافت اطلاعات خطایی رخ داده است !")
-      );
-  }, []);
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+          toast.error("خطا در دریافت اطلاعات ایجاد!");
+        });
+    }
+  }, [productId]);
 
   const onAttributeGroupChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedGroup = event.target.value;
@@ -142,13 +153,11 @@ export default function Edit() {
       apiCall.setEndpoint(`products-media/${productMediaId}/delete`);
       return apiCall.deleteRequest();
     },
-    onSuccess: (response, productMediaId: number) => {
-      setProductInfo({
-        ...productInfo,
-        medias: productInfo.medias.filter(
-          (media) => media.id !== productMediaId
-        ),
-      });
+    onSuccess: (_, productMediaId) => {
+      setProductInfo((prev) => ({
+        ...prev,
+        medias: prev.medias.filter((media) => media.id !== productMediaId),
+      }));
       queryClient.invalidateQueries({
         queryKey: ["products"],
         exact: true,
@@ -156,8 +165,8 @@ export default function Edit() {
       toast.success("عملیات با موفقیت انجام شد!");
     },
     onError: (error: AxiosError) => {
-      // Show error toast with a generic message
       toast.error("در انجام عملیات خطایی رخ داده است!");
+      console.log(error);
     },
   });
 
@@ -166,7 +175,7 @@ export default function Edit() {
       apiCall.setEndpoint(`products-media/${productMediaId}/update`);
       return apiCall.patchRequest();
     },
-    onSuccess: (response, productMediaId: number) => {
+    onSuccess: (_, productMediaId: number) => {
       // Update the product info state
       setProductInfo({
         ...productInfo,
@@ -185,8 +194,7 @@ export default function Edit() {
 
       toast.success("عملیات با موفقیت انجام شد!");
     },
-    onError: (error: AxiosError) => {
-      // Show error toast with a generic message
+    onError: () => {
       toast.error("در انجام عملیات خطایی رخ داده است!");
     },
   });
@@ -204,7 +212,7 @@ export default function Edit() {
         "Content-type": "multipart/form-data",
       });
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["products"],
         exact: true,
@@ -213,45 +221,42 @@ export default function Edit() {
         bodyClassName: "text-lg font-black",
       });
     },
-    onError: (error: AxiosError) => {
+    onError: () => {
       toast.error("در انجام عملیات خطایی رخ داده است !");
     },
   });
 
+  const constructMetadata = (formData: FormData) => {
+    const attributes = formState.attributes.reduce((acc, attr) => {
+      const value = formData.get(`attribute_${attr.id}`) || "";
+      if (value) acc[attr.id] = value.toString();
+      return acc;
+    }, {} as Record<string, string>);
+
+    return {
+      title: title.current?.value,
+      count: count.current?.value,
+      price: price.current?.value?.replace(/,/g, ""),
+      category: formState.category,
+      service: formState.service,
+      description: description.current?.value,
+      attributes,
+      hero_image: formData.get("hero_image"),
+      tags: Array.isArray(formState.tags)
+        ? formState.tags.map(({ value }) => value)
+        : [],
+    };
+  };
+
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const metadata = constructMetadata(formData);
 
-    try {
-      const formData = new FormData(event.currentTarget);
+    formState.files.forEach((file) => formData.append("files", file));
+    formData.append("metadata", JSON.stringify(metadata));
 
-      const attributes = formState.attributes.reduce((acc, attr) => {
-        const value = formData.get(`attribute_${attr.id}`) || "";
-        if (value) acc[attr.id] = value.toString();
-        return acc;
-      }, {} as { [key: string]: string });
-
-      formState.files.forEach((file) => formData.append("files", file));
-
-      const metadata = {
-        title: title.current?.value,
-        count: count.current?.value,
-        price: price.current?.value.replace(/,/g, ""),
-        category: formState.category,
-        service: formState.service,
-        description: description.current?.value,
-        attributes: attributes,
-        hero_image: formData.get("hero_image"),
-        tags: Array.isArray(formState.tags)
-          ? formState.tags.map(({ value }) => value)
-          : [],
-      };
-      console.log(metadata);
-      formData.append("metadata", JSON.stringify(metadata));
-
-      postProductForm.mutate({ formData, productId });
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+    postProductForm.mutate({ formData, productId });
   };
 
   if (!productId)
@@ -334,12 +339,7 @@ export default function Edit() {
                 type="text"
                 ref={price}
                 id="number"
-                onChange={(event) => {
-                  const value = event.target.value.replace(/,/g, "");
-                  if (!isNaN(Number(value))) {
-                    event.target.value = Number(value).toLocaleString();
-                  }
-                }}
+                onChange={formatPrice}
                 className="styled-input"
                 defaultValue={productInfo.details.price}
               />
@@ -540,9 +540,9 @@ export default function Edit() {
               <label className="block text-sm/6 font-medium text-gray-900">
                 عکس های ذخیره شده
               </label>
-              <div className="overflow-x-auto rounded-lg">
+              <div className="overflow-y-auto border border-gray-300 rounded-lg max-h-[300px]">
                 <table className="min-w-full border-collapse bg-white">
-                  <thead>
+                  <thead className="sticky">
                     <tr className="bg-red-400 text-white text-lg">
                       <th className="text-right py-1.5 px-6 border-l">ردیف</th>
                       <th className="text-right py-1.5 px-6 border-l">

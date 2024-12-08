@@ -15,7 +15,7 @@ import {
 } from "../../../types/Admin";
 import FileDropzone from "../../../components/Dropzone";
 import { toast } from "react-toastify";
-import { AxiosError } from "axios";
+import { formatPrice } from "../../../services/productService";
 
 const Create = () => {
   const title = useRef<HTMLInputElement>(null);
@@ -57,7 +57,7 @@ const Create = () => {
           });
         }
       })
-      .catch((error:AxiosError) => toast.error("در دریافت اطلاعات خطایی رخ داده است !"));
+      .catch(() => toast.error("در دریافت اطلاعات خطایی رخ داده است !"));
   }, []);
 
   const onAttributeGroupChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -78,15 +78,16 @@ const Create = () => {
         "Content-type": "multipart/form-data",
       });
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["products"],
         exact: true,
       });
-      toast.success("عملیات با موفقیت انجام شد !",
-      {bodyClassName:"text-lg font-black"});
+      toast.success("عملیات با موفقیت انجام شد !", {
+        bodyClassName: "text-lg font-black",
+      });
     },
-    onError: (error:AxiosError) => {
+    onError: () => {
       toast.error("در انجام عملیات خطایی رخ داده است !");
     },
   });
@@ -172,12 +173,7 @@ const Create = () => {
                 type="text"
                 ref={price}
                 id="number"
-                onChange={(event) => {
-                  const value = event.target.value.replace(/,/g, "");
-                  if (!isNaN(Number(value))) {
-                    event.target.value = Number(value).toLocaleString();
-                  }
-                }}
+                onChange={formatPrice}
                 className="styled-input"
               />
             </div>
@@ -282,7 +278,7 @@ const Create = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {formState.attributes.length > 0 &&
+                    {formState.attributes.length > 0 ? (
                       formState.attributes.map((attr, index) => (
                         <tr
                           key={index}
@@ -291,7 +287,7 @@ const Create = () => {
                           } hover:bg-gray-100 transition-colors duration-200`}
                         >
                           <td className="text-right py-4 px-6 border-l border-gray-200 font-medium text-gray-800">
-                            {index}
+                            {index + 1}
                           </td>
                           <td className="text-right py-4 px-6 border-l border-gray-200 text-gray-700">
                             {attr.title}
@@ -305,7 +301,17 @@ const Create = () => {
                             />
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    ) : (
+                      <tr className="border-b bg-gray-50">
+                        <td
+                          colSpan={6}
+                          className="text-center py-4 px-6 text-gray-500"
+                        >
+                          هیچ گروه ویژگی انتخاب نشده !
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -319,6 +325,7 @@ const Create = () => {
               </label>
               <FileDropzone
                 onFilesChange={(files) => setFormState({ ...formState, files })}
+                hasHero={false}
               />
             </div>
 

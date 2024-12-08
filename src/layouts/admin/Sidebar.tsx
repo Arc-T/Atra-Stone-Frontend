@@ -1,9 +1,14 @@
 import {
   Award,
-  Basket,
+  AwardFill,
+  Bookmark,
+  BookmarkFill,
   Cart,
-  Clipboard2Data,
+  CartFill,
+  Dice3,
+  Dice3Fill,
   HouseDoor,
+  HouseDoorFill,
 } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
 import SidebarItems from "../../components/SidebarItems";
@@ -15,17 +20,31 @@ interface Props {
 const Aside = ({ isOpen }: Props) => {
   const location = useLocation();
 
+  const isUrlActive = (path: string): boolean => {
+    return location.pathname.startsWith(`/admin/${path}`);
+  };
+
   const menuItems = [
-    { label: "خانه", path: "home", icon: HouseDoor },
-    { label: "محصولات", path: "products", icon: Cart },
-    { label: "سفارشات", path: "orders", icon: Basket },
-    { label: "تخفیفات", path: "settings", icon: Award },
-    { label: "گزارشات", path: "reports", icon: Clipboard2Data },
+    { label: "خانه", path: "home", icon: HouseDoor, activeIcon: HouseDoorFill },
+    { label: "محصولات", path: "products", icon: Cart, activeIcon: CartFill },
+    {
+      label: "دسته بندی ها",
+      path: "categories",
+      icon: Bookmark,
+      activeIcon: BookmarkFill,
+    },
+    { label: "تگ ها", path: "tags", icon: Award, activeIcon: AwardFill },
+    {
+      label: "ویژگی ها",
+      path: "attributes",
+      icon: Dice3,
+      activeIcon: Dice3Fill,
+    },
   ];
 
   return (
     <aside
-      className={`fixed items-center top-0 right-0 h-full w-56 px-4 py-4 bg-white transform transition-transform duration-300 ease-in-out 
+      className={`fixed top-0 right-0 h-full w-56 px-4 py-4 bg-white transform transition-transform duration-300 ease-in-out
       ${isOpen ? "translate-x-0" : "translate-x-full"} 
       xl:translate-x-0 xl:static xl:flex-shrink-0`}
       role="navigation"
@@ -36,15 +55,17 @@ const Aside = ({ isOpen }: Props) => {
       </h2>
 
       <ul>
-        {menuItems.map(({ label, path, icon }) => (
-          <Link to={path} key={path}>
-            <SidebarItems
-              icon={icon}
-              label={label}
-              path={path}
-              isActive={location.pathname.startsWith("/admin/" + path)}
-            />
-          </Link>
+        {menuItems.map(({ label, path, icon, activeIcon }) => (
+          <li key={path}>
+            <Link to={`/admin/${path}`} className="block">
+              <SidebarItems
+                icon={isUrlActive(path) ? activeIcon : icon}
+                label={label}
+                isActive={isUrlActive(path)}
+                path={path}
+              />
+            </Link>
+          </li>
         ))}
       </ul>
     </aside>

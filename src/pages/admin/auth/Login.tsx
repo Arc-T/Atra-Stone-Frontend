@@ -2,8 +2,9 @@ import { FormEvent, useRef } from "react";
 import { axiosInstance } from "../../../services/apiClient.ts";
 import { useMutation } from "@tanstack/react-query";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { LoginInputs, TokenResponse } from "./AuthType.ts";
 import { AxiosError } from "axios";
+import { LoginInputs, TokenResponse } from "./authType.ts";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Login() {
   if (localStorage.getItem("token")) return <Navigate to={"/admin/home"} />;
@@ -16,18 +17,17 @@ export default function Login() {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const loginMutation = useMutation<TokenResponse, AxiosError, LoginInputs>({
-    
     mutationFn: (inputs: LoginInputs) => {
       return axiosInstance
-        .post<TokenResponse>("users/auth/sign-in", inputs )
+        .post<TokenResponse>("users/auth/sign-in", inputs)
         .then((response) => response.data);
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
       navigate("/admin/home");
     },
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
+      toast.error("نام کاربری یا رمز عبور اشتباه است");
     },
   });
 
@@ -45,6 +45,7 @@ export default function Login() {
 
   return (
     <>
+      <ToastContainer position="top-left" rtl={true} />
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-6 lg:px-8">
         {state && (
           <span className={"bg-red-700 text-white p-3 rounded-lg"}>

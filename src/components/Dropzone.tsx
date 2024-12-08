@@ -61,25 +61,30 @@ const FileDropzone = ({ onFilesChange, hasHero }: FileDropzoneProps) => {
                 className="w-12 h-12 object-cover rounded-md ml-4"
               />
             )}
-            <span className="flex-1">{file.name}</span>
-            <input type="hidden" name="hero_image" value={hero} />
-            <button
-              onClick={() => {
-                if (!hasHero) setHero(0);
-                handleDelete(file);
-              }}
-              className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-            >
-              حذف
-            </button>
-            {index !== hero && (
+            {/* Filename with truncation */}
+            <span className="flex-1 truncate">{file.name}</span>
+
+            {/* Buttons */}
+            <div className="flex-shrink-0 flex space-x-2">
+              <input type="hidden" name="hero_image" value={hero} />
               <button
-                onClick={() => setHero(index)}
-                className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                onClick={() => {
+                  if (!hasHero) setHero(0);
+                  handleDelete(file);
+                }}
+                className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
               >
-                پس زمینه
+                حذف
               </button>
-            )}
+              {index !== hero && (
+                <button
+                  onClick={() => setHero(index)}
+                  className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                >
+                  پس زمینه
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>

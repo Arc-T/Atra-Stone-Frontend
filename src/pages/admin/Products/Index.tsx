@@ -16,7 +16,7 @@ export default function Index() {
     if (location.pathname === "/admin/products") {
       navigate("list");
     }
-  });
+  }, []);
 
   const tabSelected = (pathName: string): boolean => {
     return location.pathname.endsWith(pathName);

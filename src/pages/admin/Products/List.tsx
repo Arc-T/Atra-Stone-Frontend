@@ -2,13 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ApiClient from "../../../services/apiClient.ts";
 import { useState } from "react";
 import { Modal } from "../../../components/Modal.tsx";
-import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { Products } from "../../../types/Admin.ts";
 
 const List = () => {
-  const api = new ApiClient("/products/list");
+  const api = new ApiClient("/products/index");
 
   const queryClient = useQueryClient();
 
@@ -34,14 +33,14 @@ const List = () => {
       api.setEndpoint(`products/${productId}/delete`);
       return api.deleteRequest();
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["products"],
         exact: true,
       });
       toast.success("عملیات با موفقیت انجام شد !");
     },
-    onError: (error: AxiosError) => {
+    onError: () => {
       toast.error("در انجام عملیات خطایی رخ داده است !");
     },
   });
@@ -124,7 +123,7 @@ const List = () => {
                       <div className="flex justify-center items-center ms-2">
                         <Link
                           to={`/admin/products/${product.id}/edit`}
-                          className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150">
+                          className="bg-blue-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150">
                           ویرایش
                         </Link>
                         <button
