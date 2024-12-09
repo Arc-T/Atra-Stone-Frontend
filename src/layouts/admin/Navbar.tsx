@@ -20,7 +20,7 @@ export default function Navbar({ toggleSidebar }: Props) {
   return (
     <nav className="bg-white py-2 px-4 rounded-lg drop-shadow-lg">
       <div className="flex justify-between items-center">
-        <div className="text-gray-700 font-bold">My App</div>
+        <div className="text-gray-700 font-bold">خانه/ خلاصه آمارها</div>
 
         {/* Button to toggle the sidebar */}
         <button className="text-white xl:hidden" onClick={toggleSidebar}>
