@@ -2,63 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Vazirmatn";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(assets/fonts/Vazirmatn/Vazirmatn-Light.ttf) format("woff2"),
+    url(assets/fonts/) format("woff");
+}
+@font-face {
+  font-family: "Vazirmatn";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/fonts/Vazirmatn/Vazirmatn-Regular.ttf) format("woff2"),
+    url(assets/fonts/) format("woff");
+}
+@font-face {
+  font-family: "Vazirmatn";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(assets/fonts/Vazirmatn/Vazirmatn-Bold.ttf) format("woff2"),
+    url(assets/fonts/) format("woff");
+}
+@font-face {
+  font-family: "Shabnam";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(assets/fonts/Shabnam-Light-FD.woff2) format("woff2"),
+    url(assets/fonts/Shabnam-Light-FD.woff) format("woff");
+}
+@font-face {
+  font-family: "Shabnam";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/fonts/Shabnam-FD.woff2) format("woff2"),
+    url(assets/fonts/Shabnam-FD.woff) format("woff");
+}
+@font-face {
+  font-family: "Shabnam";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(assets/fonts/Shabnam-Bold-FD.woff2) format("woff2"),
+    url(assets/fonts/Shabnam-Bold-FD.woff) format("woff");
+}
+
 @layer base {
   .styled-input {
     @apply flex w-full text-sm text-gray-500 border border-gray-300 rounded shadow-sm transition-all duration-300 focus:outline-none bg-white hover:border-gray-400 focus:border-indigo-500 focus:ring focus:ring-indigo-500/20 py-1.5 px-3 mt-1;
-  }
-  @font-face {
-    font-family: "Vazirmatn";
-    font-style: normal;
-    font-weight: 300;
-    font-display: swap;
-    src: url(assets/fonts/Vazirmatn/Vazirmatn-Light.ttf) format("woff2"),
-      url(assets/fonts/) format("woff");
-  }
-  @font-face {
-    font-family: "Vazirmatn";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(assets/fonts/Vazirmatn/Vazirmatn-Regular.ttf) format("woff2"),
-      url(assets/fonts/) format("woff");
-  }
-  @font-face {
-    font-family: "Vazirmatn";
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url(assets/fonts/Vazirmatn/Vazirmatn-Bold.ttf) format("woff2"),
-      url(assets/fonts/) format("woff");
-  }
-  @font-face {
-    font-family: "Shabnam";
-    font-style: normal;
-    font-weight: 300;
-    font-display: swap;
-    src: url(assets/fonts/Shabnam-Light-FD.woff2) format("woff2"),
-      url(assets/fonts/Shabnam-Light-FD.woff) format("woff");
-  }
-  @font-face {
-    font-family: "Shabnam";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(assets/fonts/Shabnam-FD.woff2) format("woff2"),
-      url(assets/fonts/Shabnam-FD.woff) format("woff");
-  }
-  @font-face {
-    font-family: "Shabnam";
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url(assets/fonts/Shabnam-Bold-FD.woff2) format("woff2"),
-      url(assets/fonts/Shabnam-Bold-FD.woff) format("woff");
-  }
-  *{
-    font-family: "Vazirmatn", "Shabnam";
   }
   .menu-background {
     background-color: #ff2d55;
     border-radius: 8px;
   }
+
+  .custom-toast-container {
+    font-family: 'Shabnam', sans-serif; /* Replace with your desired font */
+  }
+  
+  .custom-toast-container .Toastify__toast {
+    font-family: inherit; /* Ensure the font applies to individual toasts */
+  }
+
 }

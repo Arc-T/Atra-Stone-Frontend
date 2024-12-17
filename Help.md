@@ -8,8 +8,11 @@
 8-Multi-select: npm install react-tailwindcss-select
 9-Toastify: npm i react-toastify
 10-Lighthouse npm i -g lighthouse
+11-Headless UI: npm install @headlessui/react
+12-Swiper:npm i swiper
 
 /\*\*
 ** TODO: check user token shouldn't be in Home. \*** \*_ TODO: stale strategy of queries should be handled
 ** TODO: sidebar menu bug on double click (Products)
+** TODO: eager loading for pages
 _/

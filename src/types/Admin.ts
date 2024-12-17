@@ -4,6 +4,7 @@ export interface Products {
   price: number;
   count: number;
   name: string;
+  image?: string;
   description?: string;
   createdAt: string;
 }

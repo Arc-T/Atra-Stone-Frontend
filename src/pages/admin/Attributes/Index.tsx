@@ -25,8 +25,6 @@ export default function Index() {
     deleteOption: {} as { id: number; name: string; type: string } | null,
   });
 
-  const [test, setTest] = useState({ tesging: [] as SelectValue });
-
   useEffect(() => {
     fetchAttributesGroups();
   }, []);

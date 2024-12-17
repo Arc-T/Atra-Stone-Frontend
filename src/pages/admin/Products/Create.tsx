@@ -9,7 +9,7 @@ import {
 import {
   AttributeGroup,
   Category,
-  Service,
+  // Service,
   Attributes,
   DataResponse,
 } from "../../../types/Admin";
@@ -31,11 +31,11 @@ const Create = () => {
     attributes: [] as Attributes[],
     tags: null as SelectValue,
     category: "",
-    service: "",
+    // service: "",
   });
 
   const [responseData, setResponseData] = useState({
-    services: [] as Service[],
+    // services: [] as Service[],
     attributesGroup: [] as AttributeGroup[],
     categories: [] as Category[],
     tags: [] as Option[],
@@ -47,7 +47,7 @@ const Create = () => {
       .then((dataResponse) => {
         if (dataResponse) {
           setResponseData({
-            services: dataResponse.services,
+            // services: dataResponse.services,
             attributesGroup: dataResponse.attributes_group,
             categories: dataResponse.categories,
             tags: dataResponse.tags.map((tag) => ({
@@ -111,7 +111,7 @@ const Create = () => {
         count: count.current?.value,
         price: price.current?.value.replace(/,/g, ""),
         category: formState.category,
-        service: formState.service,
+        // service: formState.service,
         description: description.current?.value,
         attributes: attributes,
         hero_image: formData.get("hero_image"),
@@ -178,7 +178,7 @@ const Create = () => {
               />
             </div>
 
-            <div className="flex flex-col w-1/5">
+            <div className="flex flex-col w-full">
               <label className="block text-sm font-medium text-gray-900">
                 دسته بندی
               </label>
@@ -198,11 +198,11 @@ const Create = () => {
               </select>
             </div>
 
-            <div className="flex flex-col w-1/3">
+            {/* <div className="flex flex-col w-1/3">
               <label className="block text-sm font-medium text-gray-900">
                 خدمات
               </label>
-              <select
+            <select
                 defaultValue={"0"}
                 className="styled-input"
                 onChange={(event) =>
@@ -216,7 +216,7 @@ const Create = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-row w-full gap-4">

@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
-import atra from "../../assets/images/atra.jpg";
 
-interface Orders {
-  id: number;
-  user: string;
-  product: string;
-  address: string;
-  date: string;
-}
+// interface Orders {
+//   id: number;
+//   user: string;
+//   product: string;
+//   address: string;
+//   date: string;
+// }
 export default function Home() {
-  const [orders, setOrders] = useState([] as Orders[]);
+  // const [orders, setOrders] = useState([] as Orders[]);
 
   return (
     <>

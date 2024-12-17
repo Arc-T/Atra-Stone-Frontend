@@ -8,7 +8,7 @@ import {
   Category,
   DataResponse,
   ProductMedia,
-  Service,
+  // Service,
   Tag,
 } from "../../../types/Admin";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -57,16 +57,16 @@ export default function Edit() {
     attributes: [] as Attributes[],
     tags: null as SelectValue,
     category: "",
-    service: "",
+    // service: "",
   });
 
   const [dataResponse, setDataResponse] = useState<{
-    services: Service[];
+    // services: Service[];
     attributesGroup: AttributeGroup[];
     categories: Category[];
     tags: Option[];
   }>({
-    services: [],
+    // services: [],
     attributesGroup: [],
     categories: [],
     tags: [],
@@ -121,7 +121,7 @@ export default function Edit() {
         .getRequest<DataResponse>()
         .then((dataResponse) => {
           setDataResponse({
-            services: dataResponse.services,
+            // services: dataResponse.services,
             attributesGroup: dataResponse.attributes_group,
             categories: dataResponse.categories,
             tags: dataResponse.tags.map((tag) => ({
@@ -238,7 +238,7 @@ export default function Edit() {
       count: count.current?.value,
       price: price.current?.value?.replace(/,/g, ""),
       category: formState.category,
-      service: formState.service,
+      // service: formState.service,
       description: description.current?.value,
       attributes,
       hero_image: formData.get("hero_image"),
@@ -345,12 +345,12 @@ export default function Edit() {
               />
             </div>
 
-            <div className="flex flex-col w-1/5">
+            <div className="flex flex-col w-full">
               <label className="block text-sm font-medium text-gray-900">
                 دسته بندی
               </label>
               <select
-                defaultValue={productInfo.details.categoryId}
+                defaultValue={productInfo.details.categoryId || 'انتخاب کنید ...'}
                 className="styled-input"
                 onChange={(event) =>
                   setFormState({ ...formState, category: event.target.value })
@@ -364,7 +364,7 @@ export default function Edit() {
               </select>
             </div>
 
-            <div className="flex flex-col w-1/3">
+            {/* <div className="flex flex-col w-1/3">
               <label className="block text-sm font-medium text-gray-900">
                 خدمات
               </label>
@@ -382,7 +382,7 @@ export default function Edit() {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-row w-full gap-4">

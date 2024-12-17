@@ -1,27 +1,28 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api/v1/",
+  // baseURL: "http://localhost:8080/api/v1/",
+  baseURL: "https://atrastones.com/api/v1/",
   timeout: 2000,
 });
 
-// axiosInstance.interceptors.response.use(
-//   (response: AxiosResponse) => {
-//     console.log(response.status);
-//     return response;
-//   },
-//   (error: AxiosError) => {
-//     const axiosError = error as AxiosError;
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse) => {
+    console.log(response.status);
+    return response;
+  },
+  (error: AxiosError) => {
+    const axiosError = error as AxiosError;
 
-//     if (axiosError.response?.status === 403) {
-//       localStorage.removeItem("token");
+    if (axiosError.response?.status === 403) {
+      localStorage.removeItem("token");
 
-//       window.location.href = "/admin/home";
-//     }
+      window.location.href = "/admin/home";
+    }
 
-//     return Promise.reject(error);
-//   }
-// );
+    return Promise.reject(error);
+  }
+);
 
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
