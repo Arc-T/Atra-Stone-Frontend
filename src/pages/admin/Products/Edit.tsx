@@ -10,7 +10,7 @@ import {
   ProductMedia,
   // Service,
   Tag,
-} from "../../../types/Admin";
+} from "../../../types/admin";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Option,
@@ -20,7 +20,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import FileDropzone from "../../../components/Dropzone";
 import Select from "react-tailwindcss-select";
-import { Modal } from "../../../components/Modal";
+// import { Modal } from "../../../components/DeleteModal";
 import { formatPrice } from "../../../services/productService";
 
 interface Response {
@@ -83,11 +83,11 @@ export default function Edit() {
   });
 
   const { productId } = useParams();
-  const [selectedMedia, setSelectedMedia] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [selectedMedia, setSelectedMedia] = useState<{
+  //   id: number;
+  //   name: string;
+  // } | null>(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const apiCall = new ApiClient("");
 
   useEffect(() => {
@@ -148,27 +148,27 @@ export default function Edit() {
       .catch((error) => console.error("Error fetching attributes:", error));
   };
 
-  const onModalSubmit = useMutation({
-    mutationFn: (productMediaId: number) => {
-      apiCall.setEndpoint(`products-media/${productMediaId}/delete`);
-      return apiCall.deleteRequest();
-    },
-    onSuccess: (_, productMediaId) => {
-      setProductInfo((prev) => ({
-        ...prev,
-        medias: prev.medias.filter((media) => media.id !== productMediaId),
-      }));
-      queryClient.invalidateQueries({
-        queryKey: ["products"],
-        exact: true,
-      });
-      toast.success("عملیات با موفقیت انجام شد!");
-    },
-    onError: (error: AxiosError) => {
-      toast.error("در انجام عملیات خطایی رخ داده است!");
-      console.log(error);
-    },
-  });
+  // const onModalSubmit = useMutation({
+  //   mutationFn: (productMediaId: number) => {
+  //     apiCall.setEndpoint(`products-media/${productMediaId}/delete`);
+  //     return apiCall.deleteRequest();
+  //   },
+  //   onSuccess: (_, productMediaId) => {
+  //     setProductInfo((prev) => ({
+  //       ...prev,
+  //       medias: prev.medias.filter((media) => media.id !== productMediaId),
+  //     }));
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["products"],
+  //       exact: true,
+  //     });
+  //     toast.success("عملیات با موفقیت انجام شد!");
+  //   },
+  //   onError: (error: AxiosError) => {
+  //     toast.error("در انجام عملیات خطایی رخ داده است!");
+  //     console.log(error);
+  //   },
+  // });
 
   const onUpdateSubmit = useMutation({
     mutationFn: (productMediaId: number) => {
@@ -272,7 +272,7 @@ export default function Edit() {
 
   return (
     <>
-      {isModalOpen && selectedMedia && (
+      {/* {isModalOpen && selectedMedia && (
         <Modal
           title="تصویر"
           isOpen={isModalOpen}
@@ -289,7 +289,7 @@ export default function Edit() {
           id={selectedMedia.id}
           name={selectedMedia.name}
         />
-      )}
+      )} */}
       <form
         method="POST"
         encType="multipart/form-data"
@@ -350,7 +350,9 @@ export default function Edit() {
                 دسته بندی
               </label>
               <select
-                defaultValue={productInfo.details.categoryId || 'انتخاب کنید ...'}
+                defaultValue={
+                  productInfo.details.categoryId || "انتخاب کنید ..."
+                }
                 className="styled-input"
                 onChange={(event) =>
                   setFormState({ ...formState, category: event.target.value })
@@ -583,19 +585,20 @@ export default function Edit() {
                           <div className="flex justify-center items-center me-2">
                             <a
                               target="_blank"
-                              href={`http://localhost:8080/medias/products/${productId}/${media.name}`}
+                              // href={`http://localhost:8080/medias/products/${productId}/${media.name}`}
+                              href={`/`}
                               className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"
                             >
                               نمایش
                             </a>
                             <button
-                              onClick={() => {
-                                setSelectedMedia({
-                                  id: media.id,
-                                  name: media.name,
-                                });
-                                setIsModalOpen(true);
-                              }}
+                              // onClick={() => {
+                              //   setSelectedMedia({
+                              //     id: media.id,
+                              //     name: media.name,
+                              //   });
+                              //   setIsModalOpen(true);
+                              // }}
                               type="button"
                               className="bg-red-500 text-white py-2 px-5 rounded-lg hover:bg-red-600 shadow-md transition-all duration-150 mx-2"
                             >

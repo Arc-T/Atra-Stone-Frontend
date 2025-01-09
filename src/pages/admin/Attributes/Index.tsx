@@ -4,10 +4,10 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { CREATE_FAILED_MSG, FETCH_FAILED_MSG } from "../../../types/messages";
 import Select from "react-tailwindcss-select";
-import { AttributeGroup, Attributes } from "../../../types/Admin";
+import { AttributeGroup, Attributes } from "../../../types/admin";
 import { SelectValue } from "react-tailwindcss-select/dist/components/type";
 import { useMutation } from "@tanstack/react-query";
-import { Modal } from "../../../components/Modal";
+// import { Modal } from "../../../components/DeleteModal";
 
 interface IndexResponse {
   attributes: Attributes[];
@@ -29,7 +29,7 @@ export default function Index() {
     fetchAttributesGroups();
   }, []);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchGroupAttributes = (id: number) => {
     return api
@@ -72,12 +72,12 @@ export default function Index() {
         toast.error(FETCH_FAILED_MSG + error.message);
       });
   };
-  const deleteAttributeGroups = (id: number) => {
-    return api.setEndpoint(`/attributes/groups/${id}/delete`).deleteRequest();
-  };
-  const deleteAttribute = (id: number) => {
-    return api.setEndpoint(`/attributes/${id}/delete`).deleteRequest();
-  };
+  // const deleteAttributeGroups = (id: number) => {
+  //   return api.setEndpoint(`/attributes/groups/${id}/delete`).deleteRequest();
+  // };
+  // const deleteAttribute = (id: number) => {
+  //   return api.setEndpoint(`/attributes/${id}/delete`).deleteRequest();
+  // };
   const attributeStore = (title: string) => {
     return api.setEndpoint("attributes/store").postRequest({ title });
   };
@@ -90,31 +90,31 @@ export default function Index() {
       .postRequest({ attributeIds });
   };
 
-  const onGroupDelete = useMutation({
-    mutationFn: (id: number) => deleteAttributeGroups(id),
-    onSuccess: () => {
-      toast.success(" گروه ویژگی با موفقیت ثبت شد !", {
-        bodyClassName: "text-lg font-black",
-      });
-      fetchAttributesGroups();
-    },
-    onError: (error: AxiosError) => {
-      toast.error(CREATE_FAILED_MSG + error.message);
-    },
-  });
+  // const onGroupDelete = useMutation({
+  //   mutationFn: (id: number) => deleteAttributeGroups(id),
+  //   onSuccess: () => {
+  //     toast.success(" گروه ویژگی با موفقیت ثبت شد !", {
+  //       bodyClassName: "text-lg font-black",
+  //     });
+  //     fetchAttributesGroups();
+  //   },
+  //   onError: (error: AxiosError) => {
+  //     toast.error(CREATE_FAILED_MSG + error.message);
+  //   },
+  // });
 
-  const onAttributeDelete = useMutation({
-    mutationFn: (id: number) => deleteAttribute(id),
-    onSuccess: () => {
-      toast.success("ویژگی با موفقیت ثبت شد !", {
-        bodyClassName: "text-lg font-black",
-      });
-      fetchAttributesGroups();
-    },
-    onError: (error: AxiosError) => {
-      toast.error(CREATE_FAILED_MSG + error.message);
-    },
-  });
+  // const onAttributeDelete = useMutation({
+  //   mutationFn: (id: number) => deleteAttribute(id),
+  //   onSuccess: () => {
+  //     toast.success("ویژگی با موفقیت ثبت شد !", {
+  //       bodyClassName: "text-lg font-black",
+  //     });
+  //     fetchAttributesGroups();
+  //   },
+  //   onError: (error: AxiosError) => {
+  //     toast.error(CREATE_FAILED_MSG + error.message);
+  //   },
+  // });
 
   const onAttributeStore = useMutation({
     mutationFn: (title: string) => attributeStore(title),
@@ -205,7 +205,7 @@ export default function Index() {
 
   return (
     <>
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <Modal
           title={
             attributes.deleteOption?.type === "ATTRIBUTE"
@@ -231,7 +231,7 @@ export default function Index() {
           id={attributes.deleteOption?.id || 0}
           name={attributes.deleteOption?.name || ""}
         />
-      )}
+      )} */}
       <div className="flex flex-col gap-4">
         {/* ******************* List Attributes & Attributes Group ******************* */}
         <div className="flex flex-col lg:flex-row gap-4">
@@ -267,7 +267,7 @@ export default function Index() {
                           <button
                             type="submit"
                             onClick={() => {
-                              setIsModalOpen(true);
+                              // setIsModalOpen(true);
                               setAttributes({
                                 ...attributes,
                                 deleteOption: {
@@ -350,7 +350,7 @@ export default function Index() {
                           <button
                             type="submit"
                             onClick={() => {
-                              setIsModalOpen(true);
+                              // setIsModalOpen(true);
                               setAttributes({
                                 ...attributes,
                                 deleteOption: {

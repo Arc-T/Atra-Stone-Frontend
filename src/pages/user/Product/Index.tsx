@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import ApiClient from "../../../services/apiClient";
 import { toast } from "react-toastify";
-import { Products } from "../../../types/Admin";
-
+import { Products } from "../../../types/admin";
 
 export default function Index() {
   const apiCall = new ApiClient("products/index");
@@ -40,7 +39,7 @@ export default function Index() {
               className="group relative border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <img
-                src={`http://localhost:8080/medias/products/${product.id}/${product.name}`}
+                // src={`${SERVER_URL}/medias/products/${product.id}/${product.name}`}
                 className="aspect-square w-full rounded-t-lg bg-gray-100 object-cover group-hover:opacity-80 transition-opacity duration-300 lg:aspect-auto lg:h-80"
               />
               <div className="p-4">

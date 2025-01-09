@@ -1,13 +1,16 @@
 import { FormEvent, useRef } from "react";
-import { axiosInstance } from "../../../services/apiClient.ts";
+import ApiClient from "../../../services/apiClient.ts";
 import { useMutation } from "@tanstack/react-query";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { LoginInputs, TokenResponse } from "./authType.ts";
 import { ToastContainer, toast } from "react-toastify";
+import { ADMIN_HOMEPAGE, USER_LOGIN_API } from "../../../types/url.ts";
+import { AUTH_FAILED } from "../../../types/messages.ts";
 
 export default function Login() {
-  if (localStorage.getItem("token")) return <Navigate to={"/admin/home"} />;
+  if (localStorage.getItem("token"))
+    return <Navigate to={`/${ADMIN_HOMEPAGE}`} />;
 
   const { state } = useLocation();
 
@@ -16,18 +19,18 @@ export default function Login() {
   const phoneRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const loginMutation = useMutation<TokenResponse, AxiosError, LoginInputs>({
+  const loginMutation = useMutation<string, AxiosError, LoginInputs>({
     mutationFn: (inputs: LoginInputs) => {
-      return axiosInstance
-        .post<TokenResponse>("users/auth/sign-in", inputs)
-        .then((response) => response.data);
+      return new ApiClient(USER_LOGIN_API)
+        .postRequest<TokenResponse>(inputs)
+        .then((response) => response.token);
     },
-    onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      navigate("/admin/home");
+    onSuccess: (token) => {
+      localStorage.setItem("token", token);
+      navigate(`/${ADMIN_HOMEPAGE}`);
     },
     onError: () => {
-      toast.error("نام کاربری یا رمز عبور اشتباه است");
+      toast.error(AUTH_FAILED);
     },
   });
 

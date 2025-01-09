@@ -14,7 +14,7 @@ const CheckToken = ({ children }: ProtectedRouteProps) => {
   };
 
   if (!checkToken()) {
-    return <Navigate to={"/admin/login"} state={message} />;
+    return <Navigate to={"/user/login"} state={message} />;
   }
 
   return <>{children}</>;

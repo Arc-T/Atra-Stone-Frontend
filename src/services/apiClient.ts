@@ -1,14 +1,14 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import { API_ENDPOINT, USER_LOGIN_PAGE } from "../types/url";
+import { useNavigate } from "react-router-dom";
 
-export const axiosInstance = axios.create({
-  // baseURL: "http://localhost:8080/api/v1/",
-  baseURL: "https://atrastones.com/api/v1/",
+const axiosInstance = axios.create({
+  baseURL: API_ENDPOINT,
   timeout: 2000,
 });
 
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log(response.status);
     return response;
   },
   (error: AxiosError) => {
@@ -16,8 +16,9 @@ axiosInstance.interceptors.response.use(
 
     if (axiosError.response?.status === 403) {
       localStorage.removeItem("token");
+      const navigate = useNavigate();
 
-      window.location.href = "/admin/home";
+      navigate(USER_LOGIN_PAGE);
     }
 
     return Promise.reject(error);
@@ -30,7 +31,9 @@ axiosInstance.interceptors.request.use((config) => {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
   console.log(config.headers);
-
+  console.log(config.baseURL);
+  console.log(config.auth);
+  console.log(config.data);
   return config;
 });
 
@@ -39,6 +42,10 @@ class ApiClient {
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
+  }
+
+  getAxiosInstance(): AxiosInstance {
+    return axiosInstance;
   }
 
   setEndpoint(endpoint: string) {

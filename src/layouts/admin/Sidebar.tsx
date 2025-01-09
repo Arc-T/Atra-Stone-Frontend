@@ -10,7 +10,7 @@ import {
   HouseDoor,
   HouseDoorFill,
 } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import SidebarItems from "../../components/SidebarItems";
 
 interface Props {
@@ -55,17 +55,15 @@ const Aside = ({ isOpen }: Props) => {
       </h2>
 
       <ul>
-        {menuItems.map(({ label, path, icon, activeIcon }) => (
-          <li key={path}>
-            <Link to={`/admin/${path}`} className="block">
-              <SidebarItems
-                icon={isUrlActive(path) ? activeIcon : icon}
-                label={label}
-                isActive={isUrlActive(path)}
-                path={path}
-              />
-            </Link>
-          </li>
+        {menuItems.map(({ label, path, icon, activeIcon }, index) => (
+          <NavLink to={`/admin/${path}`} className="block" key={index}>
+            <SidebarItems
+              icon={isUrlActive(path) ? activeIcon : icon}
+              label={label}
+              isActive={isUrlActive(path)}
+              path={path}
+            />
+          </NavLink>
         ))}
       </ul>
     </aside>

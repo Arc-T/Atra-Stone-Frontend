@@ -14,7 +14,7 @@ export default function Navbar({ toggleSidebar }: Props) {
 
   const logoutEvent = () => {
     localStorage.removeItem("token");
-    navigate("/admin/login");
+    navigate("/user/login");
   };
 
   return (
@@ -69,7 +69,7 @@ export default function Navbar({ toggleSidebar }: Props) {
             {/* Profile Dropdown */}
             {profileMenu && (
               <div
-                className="fixed left-3 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-40 z-1"
+                className="fixed left-3 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-40 z-100"
                 style={{ top: "100%" }}
               >
                 <button

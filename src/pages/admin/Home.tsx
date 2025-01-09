@@ -1,11 +1,6 @@
+import { Bag, Box, Gem, People } from "react-bootstrap-icons";
+import welcome_logo from "../../assets/images/atra.jpg";
 
-// interface Orders {
-//   id: number;
-//   user: string;
-//   product: string;
-//   address: string;
-//   date: string;
-// }
 export default function Home() {
   // const [orders, setOrders] = useState([] as Orders[]);
 
@@ -14,11 +9,7 @@ export default function Home() {
       <div className="grid grid-cols-6 gap-4">
         <div className="col-span-4 bg-white rounded-md flex p-4 shadow-lg">
           <div className="flex-grow">
-            <img
-              src="/src/assets/images/atra.jpg"
-              className="max-w-xs"
-              alt="atra"
-            />
+            <img src={welcome_logo} className="max-w-xs" alt="atra" />
           </div>
           <div className="flex-grow grid grid-cols-2 gap-6 my-4 mx-8 items-center">
             <h1 className="text-4xl font-semibold col-span-2 mb-4">
@@ -53,29 +44,64 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-between rounded-md p-4 col-span-2 h-full">
+        <div className="flex flex-col justify-between rounded-md col-span-2 h-full ">
           <div className="flex w-full gap-4">
-            <div className="flex flex-col w-full">
-              <div className="bg-white text-center rounded shadow-md font-thin text-gray-700">
-                مشتریان
+            <div className="flex flex-col w-full h-full items-center justify-between bg-white rounded-md shadow-lg p-4">
+              <div className="flex items-center justify-center w-full">
+                <div className="bg-red-700 text-white p-2 rounded-md mb-6">
+                  {/* Replace this SVG with your specific icon */}
+                  <People height={48} width={48}/>
+                </div>
+                {/* <span className="text-white text-sm font-medium">↓ 23%</span> */}
+              </div>
+              <div className="text-center mt-4">
+                <p className="text-lg font-bold">234</p>
+                <p className="text-gray-600 text-sm">سفارشات</p>
               </div>
             </div>
-            <div className="flex flex-col w-full">
-              <span className="bg-white text-center rounded shadow-md font-thin text-gray-700">
-                سفارشات
-              </span>
+
+            <div className="flex flex-col w-full h-full items-center justify-between bg-white rounded-md shadow-lg p-4">
+              <div className="flex items-center justify-center w-full">
+                <div className="bg-red-700 text-white p-2 rounded-md mb-6">
+                  {/* Replace this SVG with your specific icon */}
+                  <Box height={48} width={48}/>
+                </div>
+                {/* <span className="text-white text-sm font-medium">↓ 23%</span> */}
+              </div>
+              <div className="text-center mt-4">
+                <p className="text-lg font-bold">234</p>
+                <p className="text-gray-600 text-sm">سفارشات</p>
+              </div>
             </div>
           </div>
+
           <div className="flex w-full gap-4">
-            <div className="flex flex-col w-full">
-              <span className="bg-white text-center rounded shadow-md font-thin text-gray-700">
-                کالاها
-              </span>
+            <div className="flex flex-col w-full items-center justify-between bg-white rounded-md shadow-lg p-4">
+              <div className="flex items-center justify-center w-full mb-6">
+                <div className="bg-red-700 text-white p-2 rounded-md">
+                  {/* Replace this SVG with your specific icon */}
+                  <Gem height={48} width={48}/>
+                </div>
+                {/* <span className="text-white text-sm font-medium">↓ 23%</span> */}
+              </div>
+              <div className="text-center mt-4">
+                <p className="text-lg font-bold">234</p>
+                <p className="text-gray-600 text-sm">سفارشات</p>
+              </div>
             </div>
-            <div className="flex flex-col w-full">
-              <span className="bg-white text-center rounded shadow-md font-thin text-gray-700">
-                فروش
-              </span>
+
+            <div className="flex flex-col w-full items-center justify-between bg-white rounded-md shadow-lg p-4">
+              <div className="flex items-center justify-center w-full mb-6">
+                <div className="bg-red-700 text-white p-2 rounded-md">
+                  {/* Replace this SVG with your specific icon */}
+                  <Bag height={48} width={48}/>
+                </div>
+                {/* <span className="text-white text-sm font-medium">↓ 23%</span> */}
+              </div>
+              <div className="text-center mt-4">
+                <p className="text-lg font-bold">234</p>
+                <p className="text-gray-600 text-sm">سفارشات</p>
+              </div>
             </div>
           </div>
         </div>

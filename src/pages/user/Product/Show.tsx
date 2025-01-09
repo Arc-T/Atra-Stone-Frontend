@@ -1,7 +1,7 @@
 import { Attributes, useEffect, useState } from "react";
 import { StarFill } from "react-bootstrap-icons";
 import ApiClient from "../../../services/apiClient";
-import { AttributeValue, ProductMedia, Tag } from "../../../types/Admin";
+import { AttributeValue, ProductMedia, Tag } from "../../../types/admin";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
@@ -155,10 +155,11 @@ export default function Show() {
             }}
             className="rounded-lg flex "
           >
-            {product.medias.map((entity, index) => (
+            {product.medias.map((_, index) => (
               <SwiperSlide key={index}>
                 <img
-                  src={`http://localhost:8080/medias/products/${productId}/${entity.name}`}
+                  // src={`${SERVER_URL}/medias/products/${productId}/${entity.name}`}
+                  src={`/`}
                   className="aspect-[3/4] w-full h-full rounded-lg object-cover"
                 />
               </SwiperSlide>

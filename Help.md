@@ -10,6 +10,7 @@
 10-Lighthouse npm i -g lighthouse
 11-Headless UI: npm install @headlessui/react
 12-Swiper:npm i swiper
+13-React Hook Form:npm i react-hook-form
 
 /\*\*
 ** TODO: check user token shouldn't be in Home. \*** \*_ TODO: stale strategy of queries should be handled

@@ -9,6 +9,12 @@ export interface Products {
   createdAt: string;
 }
 
+export interface ModalProps {
+  id: number;
+  name: string;
+  title: string;
+}
+
 export interface Attributes {
   id: number;
   title: string;
@@ -52,7 +58,7 @@ export interface Category {
   title: string;
 }
 
-export interface DataResponse {
+export interface ProductCreateDetails {
   tags: Tag[];
   services: Service[];
   categories: Category[];

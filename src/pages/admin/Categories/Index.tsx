@@ -1,10 +1,9 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { Category } from "../../../types/Admin";
+import { Category } from "../../../types/admin";
 import { toast } from "react-toastify";
 import ApiClient from "../../../services/apiClient";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { Modal } from "../../../components/Modal";
 
 interface CategoryOption {
   id: number;
@@ -28,7 +27,7 @@ export default function Index() {
     deleteCategory: null,
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [action, setAction] = useState("");
 
   useEffect(() => {
@@ -87,28 +86,28 @@ export default function Index() {
     },
   });
 
-  const categoryDelete = useMutation({
-    mutationFn: (id: number) => {
-      apiCall.setEndpoint(`categories/${id}/delete`);
-      return apiCall.deleteRequest();
-    },
-    onSuccess: (_, id: number) => {
-      toast.success("دسته بندی با موفقیت حذف شد !", {
-        bodyClassName: "text-lg font-black",
-      });
+  // const categoryDelete = useMutation({
+  //   mutationFn: (id: number) => {
+  //     apiCall.setEndpoint(`categories/${id}/delete`);
+  //     return apiCall.deleteRequest();
+  //   },
+  //   onSuccess: (_, id: number) => {
+  //     toast.success("دسته بندی با موفقیت حذف شد !", {
+  //       bodyClassName: "text-lg font-black",
+  //     });
 
-      setCategoryState({
-        ...categoryState,
-        newCategory: null,
-        fetchedCategories: categoryState.fetchedCategories.filter(
-          (category) => category.id !== id
-        ),
-      });
-    },
-    onError: () => {
-      toast.error("در انجام عملیات حذف، خطایی رخ داده است !");
-    },
-  });
+  //     setCategoryState({
+  //       ...categoryState,
+  //       newCategory: null,
+  //       fetchedCategories: categoryState.fetchedCategories.filter(
+  //         (category) => category.id !== id
+  //       ),
+  //     });
+  //   },
+  //   onError: () => {
+  //     toast.error("در انجام عملیات حذف، خطایی رخ داده است !");
+  //   },
+  // });
 
   const onAddFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -130,7 +129,7 @@ export default function Index() {
 
   return (
     <>
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <Modal
           title="دسته بندی"
           isOpen={isModalOpen}
@@ -149,7 +148,7 @@ export default function Index() {
           id={categoryState.deleteCategory?.id || 0}
           name={categoryState.deleteCategory?.title || ""}
         />
-      )}
+      )} */}
       <div className="bg-white shadow-md rounded-lg py-4 px-4">
         <div className="overflow-x-auto rounded-lg">
           <form method="POST" onSubmit={onAddFormSubmit}>
@@ -251,7 +250,7 @@ export default function Index() {
                               <button
                                 type="button"
                                 onClick={() => {
-                                  setIsModalOpen(true);
+                                  // setIsModalOpen(true);
                                   setCategoryState((prevState) => ({
                                     ...prevState,
                                     deleteCategory: {

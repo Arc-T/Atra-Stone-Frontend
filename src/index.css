@@ -55,17 +55,15 @@
   .styled-input {
     @apply flex w-full text-sm text-gray-500 border border-gray-300 rounded shadow-sm transition-all duration-300 focus:outline-none bg-white hover:border-gray-400 focus:border-indigo-500 focus:ring focus:ring-indigo-500/20 py-1.5 px-3 mt-1;
   }
+  .styled-table-cell {
+    @apply text-right py-4 px-6 border-l border-gray-200 text-gray-700;
+  }
   .menu-background {
     background-color: #ff2d55;
     border-radius: 8px;
   }
-
-  .custom-toast-container {
-    font-family: 'Shabnam', sans-serif; /* Replace with your desired font */
+  .toast-body {
+    font-family: "Vazirmatn";
+    white-space: pre-line;
   }
-  
-  .custom-toast-container .Toastify__toast {
-    font-family: inherit; /* Ensure the font applies to individual toasts */
-  }
-
 }
