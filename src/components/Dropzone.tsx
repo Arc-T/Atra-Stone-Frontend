@@ -37,7 +37,7 @@ const FileDropzone = ({ onFilesChange, hasHero }: FileDropzoneProps) => {
           {({ getRootProps, getInputProps }) => (
             <div {...getRootProps()} className="cursor-pointer">
               <input {...getInputProps()} />
-              <p className="text-4xl text-purple-800">تصاویر / ویدئو ها</p>
+              <p className="text-4xl text-blue-800">تصاویر / ویدئو ها</p>
               <br />
               <p className="text-md text-gray-400">
                 عکس ها و ویدئو های خود را اینجا بکشید یا در محیط کلیک کنید
@@ -51,7 +51,7 @@ const FileDropzone = ({ onFilesChange, hasHero }: FileDropzoneProps) => {
           <div
             key={file.name}
             className={`flex items-center space-x-4 p-2 rounded-md mt-1 ${
-              index === hero ? "bg-green-200" : "bg-gray-200"
+              index === hero ? "bg-blue-200" : "bg-gray-200"
             }`}
           >
             {file.type.startsWith("image/") && (
@@ -79,7 +79,7 @@ const FileDropzone = ({ onFilesChange, hasHero }: FileDropzoneProps) => {
               {index !== hero && (
                 <button
                   onClick={() => setHero(index)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                  className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
                 >
                   پس زمینه
                 </button>

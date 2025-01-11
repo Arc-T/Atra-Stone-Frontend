@@ -26,7 +26,7 @@ import {
   MULTISELECT_PLACEHOLDER,
   MULTISELECT_SEARCH_PLACEHOLDER,
 } from "../../../types/messages";
-
+import UploadModal from "../../../components/UploadModal";
 
 interface FormValues {
   title: string;
@@ -98,6 +98,7 @@ const Create = () => {
 
   return (
     <>
+      <UploadModal />
       <form
         method="POST"
         encType="multipart/form-data"
@@ -256,13 +257,14 @@ const Create = () => {
               ></textarea>
             </div>
           </div>
-
-          <button
-            type="submit"
-            className="bg-purple-500 text-white py-2 px-5 rounded-lg hover:bg-purple-600 shadow-md transition-all duration-150"
-          >
-            ثبت محصول
-          </button>
+          <div className="flex flex-col w-1/6">
+            <button
+              type="submit"
+              className="bg-green-500 text-white py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"
+            >
+              ثبت محصول
+            </button>
+          </div>
         </div>
       </form>
     </>
