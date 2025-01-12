@@ -6,7 +6,7 @@ const UploadModal = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [files, setFiles] = useState([] as File[]);
 
-  const onFileUpload = () => {
+  const onFileUpload = () => {  
     console.log(
       "___________________________ FILES ___________________________"
     );
@@ -14,7 +14,10 @@ const UploadModal = () => {
 
   return (
     <>
-      <button className="flex flex-col justify-center items-center bg-blue-500 text-white p-4 rounded-full hover:bg-blue-600 shadow-md transition-all duration-150 fixed left-4 bottom-4">
+      <button
+        onClick={() => setIsOpen(true)}
+        className="flex flex-col justify-center items-center bg-blue-500 text-white px-5 py-4 rounded-full hover:bg-blue-600 shadow-md transition-all duration-150 fixed left-4 bottom-4"
+      >
         <Image className="text-2xl font-bold"></Image>
         <p>تصاویر</p>
       </button>
@@ -36,7 +39,7 @@ const UploadModal = () => {
             <div className="fixed inset-0 z-30 flex items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
               <div className="w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all">
                 {/* <!-- Modal content --> */}
-                <div className="bg-white px-6 py-5 sm:px-8">
+                <div className="bg-white px-6 py-5 sm:px-8 max-h-[80vh] overflow-y-auto">
                   <div className="sm:flex sm:items-start">
                     <div className="mt-3 text-center sm:text-left w-full">
                       {/* <!-- Replace this FileDropzone with actual component rendering --> */}
@@ -53,7 +56,7 @@ const UploadModal = () => {
                   <button
                     type="button"
                     className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300 transition-colors"
-                    // onClick={onCloseModal}
+                    onClick={() => setIsOpen(false)}
                   >
                     بازگشت
                   </button>
