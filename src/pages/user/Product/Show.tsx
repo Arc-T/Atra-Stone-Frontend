@@ -10,6 +10,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { generateUrl } from "../../../services/general";
+import {  PRODUCT_DETAILS_API } from "../../../types/url";
 
 interface ProductInfo {
   id: number;
@@ -54,10 +56,14 @@ export default function Show() {
   const getProductInfo = useMutation({
     mutationFn: (id: number) => {
       apiCall.setEndpoint(`products/${id}/show`);
-      return apiCall.getRequest<Response>();
+      return apiCall.getRequest();
     },
     onSuccess: (response) => {
-      setProduct(response);
+      console.log("_______________________________ HERE _______________________________");
+      
+      console.log(response);
+      
+      // setProduct(response);
     },
     onError: () => {
       toast.error("در انجام عملیات خطایی رخ داده است !");
@@ -155,11 +161,13 @@ export default function Show() {
             }}
             className="rounded-lg flex "
           >
-            {product.medias.map((_, index) => (
+            {product.medias.map((media, index) => (
               <SwiperSlide key={index}>
                 <img
-                  // src={`${SERVER_URL}/medias/products/${productId}/${entity.name}`}
-                  src={`/`}
+                  src={generateUrl(PRODUCT_DETAILS_API, {
+                    productId: productId || "",
+                    productName: media.name,
+                  })}
                   className="aspect-[3/4] w-full h-full rounded-lg object-cover"
                 />
               </SwiperSlide>

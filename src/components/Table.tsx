@@ -7,15 +7,19 @@ interface TableProps {
   loading?: boolean;
   error?: Error | null;
   children: ReactNode;
+  styles?: string;
 }
 
-function Table({ columns, error, loading = false, children }: TableProps) {
-
-  console.log(error);
-  
+function Table({
+  columns,
+  error,
+  loading = false,
+  children,
+  styles,
+}: TableProps) {
   return (
-    <div className="overflow-x-auto rounded-lg my-4">
-      <table className="min-w-full border-collapse bg-white">
+    <div className="overflow-x-auto rounded-lg max-h-[50vh] overflow-y-auto">
+      <table className={`min-w-full border-collapse bg-white ${styles}`}>
         <thead>
           <tr className="bg-red-700 text-white">
             {columns.map((title, index) => (

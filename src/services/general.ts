@@ -6,7 +6,7 @@ export const generateUrl = (
   type?: "PAGE" | "API"
 ): string => {
   
-  const baseUrl = type === "API" || null ? API_ENDPOINT : SERVER_URL;
+  const baseUrl = type === "API" || undefined ? API_ENDPOINT : SERVER_URL;
 
   return (
     baseUrl +

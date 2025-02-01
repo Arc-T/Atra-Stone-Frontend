@@ -7,7 +7,7 @@ import {
   useFetchProducts,
 } from "../../../hooks/useProducts.ts";
 import useModalStore from "../../../contexts/modalStore.tsx";
-import { Modal } from "../../../components/DeleteModal.tsx";
+import { DeleteModal } from "../../../components/DeleteModal.tsx";
 
 const List = () => {
   const tableColumns = [
@@ -26,7 +26,9 @@ const List = () => {
   return (
     <>
       {isModalOpen && (
-        <Modal onSubmit={() => deleteProductMutation.mutate(modalProps.id)} />
+        <DeleteModal
+          onSubmit={() => deleteProductMutation.mutate(Number(modalProps.id))}
+        />
       )}
       <Table columns={tableColumns} error={axiosError} loading={isLoading}>
         {Array.isArray(products) && products.length > 0 ? (
@@ -45,7 +47,10 @@ const List = () => {
                   className="w-12 h-12 rounded-full ml-2"
                   src={generateUrl(PRODUCT_DETAILS_API, {
                     productId: product.id,
-                    productName: product.name,
+                    productName: product.productMedia
+                      ? product.productMedia.find((item) => item.order === 1)
+                          ?.name ?? "Default Name"
+                      : "Default Name",
                   })}
                 />
                 {product.title}
@@ -70,7 +75,7 @@ const List = () => {
                   <button
                     onClick={() => {
                       onOpenModal({
-                        id: product.id,
+                        id: product.id.toString(),
                         name: product.title,
                         title: "کالا",
                       });

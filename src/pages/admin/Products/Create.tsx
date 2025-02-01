@@ -1,56 +1,83 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import Select from "react-tailwindcss-select";
-import { Option } from "react-tailwindcss-select/dist/components/type";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import Input from "../../../components/Input";
-import { PRODUCT_COUNT_LABEL, PRODUCT_PRICE_LABEL } from "../../../types/html";
+import {
+  Option,
+  SelectValue,
+} from "react-tailwindcss-select/dist/components/type";
+import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  PRODUCT_COUNT_LABEL,
+  PRODUCT_PRICE_LABEL,
+  PRODUCT_TITLE_LABEL,
+} from "../../../types/html";
 import Table from "../../../components/Table";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
-
 import {
-  AttributeGroup,
-  Category,
-  // Service,
-  Attributes,
-} from "../../../types/admin";
-// import FileDropzone from "../../../components/Dropzone";
-import {
-  fetchCreateDetails,
-  formatPrice,
+  deleteTempMedia,
+  getCreateDetails,
   showAttributeGroupAttributes,
-  uploadMedia,
+  storeProduct,
 } from "../../../services/productService";
 import {
+  DELETE_FAILED_MSG,
+  DELETE_SUCCESS_MSG,
   FETCH_FAILED_MSG,
   MULTISELECT_PLACEHOLDER,
   MULTISELECT_SEARCH_PLACEHOLDER,
 } from "../../../types/messages";
 import UploadModal from "../../../components/UploadModal";
+import { AttributeGroup, Category, Attributes } from "../../../types/admin";
+import { useFetchMedia } from "../../../hooks/useProducts";
+import { ArrowClockwise } from "react-bootstrap-icons";
+import { MEDIA_SHOW_URL } from "../../../types/url";
+import useModalStore from "../../../contexts/modalStore";
+import { DeleteModal } from "../../../components/DeleteModal";
 
 interface FormValues {
   title: string;
   count: number;
   price: number;
-  tags: { value: string; label: string }[];
-  attributes: string[];
-  category: string;
+  category_id: string;
+  tags: string[];
+  attribute_group_id: string;
+  attribute_values: string[];
   description: string;
 }
 
 const Create = () => {
-  const { register, handleSubmit, control } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  const { onOpenModal, isModalOpen, modalProps } = useModalStore();
+
+  const { register, handleSubmit, setValue } = useForm<FormValues>();
+
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    const formTags = Array.isArray(formState.tags)
+      ? formState.tags.map((item) => item.value)
+      : [];
+    setValue("tags", formTags);
+    data.attribute_values.filter((attr) => attr.trim() !== "");
+    storeProduct(data);
+  };
+
+  const onDeleteMedia = () =>
+    deleteTempMedia(modalProps.id)
+      .then(() => {
+        fetchMedia();
+        toast.success(DELETE_SUCCESS_MSG);
+      })
+      .catch(() => toast.error(DELETE_FAILED_MSG));
+
+  const {
+    mutate: fetchMedia,
+    data: medias,
+    isPending,
+    error: mediaFetchError,
+  } = useFetchMedia();
 
   const [formState, setFormState] = useState({
-    files: [] as File[],
     attributes: [] as Attributes[],
-    // tags: null as SelectValue,
-    // category: "",
-    // service: "",
+    tags: null as SelectValue,
   });
-
-  const [progress, setProgress] = useState(10);
 
   const [responseData, setResponseData] = useState({
     // services: [] as Service[],
@@ -60,7 +87,7 @@ const Create = () => {
   });
 
   useEffect(() => {
-    fetchCreateDetails()
+    getCreateDetails()
       .then((dataResponse) => {
         if (dataResponse) {
           setResponseData({
@@ -77,6 +104,7 @@ const Create = () => {
       .catch((error: AxiosError) =>
         toast.error(FETCH_FAILED_MSG + error.message)
       );
+    fetchMedia();
   }, []);
 
   const onAttributeGroupChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -88,17 +116,10 @@ const Create = () => {
       .catch((error) => console.error("Error fetching attributes:", error));
   };
 
-  const handleMediaUpload = () => {
-    const media = new FormData();
-    formState.files.forEach((file) => media.append("files", file));
-    uploadMedia(media, (percentage) => {
-      setProgress(percentage);
-    });
-  };
-
   return (
     <>
-      <UploadModal />
+      <UploadModal onUploadedFiles={() => fetchMedia()} />
+      {isModalOpen && <DeleteModal onSubmit={onDeleteMedia} />}
       <form
         method="POST"
         encType="multipart/form-data"
@@ -108,18 +129,32 @@ const Create = () => {
           <div className="flex flex-row gap-4">
             {/* TITLE Input */}
             <div className="flex flex-col w-1/5">
-              <Input
-                label={PRODUCT_COUNT_LABEL}
-                {...register("title")}
-                name="title"
-                type="text"
-              />
+              <div className="mb-4">
+                <label
+                  htmlFor="title"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  {PRODUCT_TITLE_LABEL}
+                </label>
+                <input
+                  id="title"
+                  className="styled-input"
+                  {...register("title")}
+                />
+              </div>
             </div>
             {/* COUNT Input */}
             <div className="flex flex-col w-1/12">
-              <Input
-                label={PRODUCT_COUNT_LABEL}
+              <label
+                htmlFor="count"
+                className="block text-sm font-medium text-gray-900"
+              >
+                {PRODUCT_COUNT_LABEL}
+              </label>
+              <input
+                id="count"
                 {...register("count")}
+                className="styled-input"
                 name="count"
                 type="number"
                 min={0}
@@ -128,8 +163,15 @@ const Create = () => {
             </div>
             {/* PRICE Input */}
             <div className="flex flex-col w-1/5">
-              <Input
-                label={PRODUCT_PRICE_LABEL}
+              <label
+                htmlFor="count"
+                className="block text-sm font-medium text-gray-900"
+              >
+                {PRODUCT_PRICE_LABEL}
+              </label>
+              <input
+                id="count"
+                className="styled-input"
                 {...register("price")}
                 name="price"
                 type="number"
@@ -143,7 +185,7 @@ const Create = () => {
               </label>
               <select
                 defaultValue={"0"}
-                {...register("category")}
+                {...register("category_id")}
                 className="styled-input"
               >
                 <option value={"0"}>{MULTISELECT_PLACEHOLDER}</option>
@@ -161,27 +203,23 @@ const Create = () => {
               <label className="block text-sm font-medium text-gray-900 mt-1">
                 تگ ها
               </label>
-              <Controller
-                name="tags"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    onChange={(value) => field.onChange(value)}
-                    value={field.value}
-                    options={responseData.tags}
-                    primaryColor={"indigo"}
-                    isSearchable={true}
-                    placeholder={MULTISELECT_PLACEHOLDER}
-                    searchInputPlaceholder={MULTISELECT_SEARCH_PLACEHOLDER}
-                    isMultiple={true}
-                    classNames={{
-                      searchIcon:
-                        "absolute w-5 h-5 mt-2.5 pb-0.5 mr-0.5 ml-4 text-gray-500",
-                      searchBox:
-                        "w-full py-2 pr-6 text-sm text-gray-500 bg-gray-100 border border-gray-200 rounded focus:border-gray-200 focus:ring-0 focus:outline-none",
-                    }}
-                  />
-                )}
+              <Select
+                onChange={(value) => {
+                  setFormState({ ...formState, tags: value });
+                }}
+                value={formState.tags}
+                options={responseData.tags}
+                primaryColor={"indigo"}
+                isSearchable={true}
+                placeholder={MULTISELECT_PLACEHOLDER}
+                searchInputPlaceholder={MULTISELECT_SEARCH_PLACEHOLDER}
+                isMultiple={true}
+                classNames={{
+                  searchIcon:
+                    "absolute w-5 h-5 mt-2.5 pb-0.5 mr-0.5 ml-4 text-gray-500",
+                  searchBox:
+                    "w-full py-2 pr-6 text-sm text-gray-500 bg-gray-100 border border-gray-200 rounded focus:border-gray-200 focus:ring-0 focus:outline-none",
+                }}
               />
             </div>
 
@@ -191,6 +229,7 @@ const Create = () => {
               </label>
               <select
                 defaultValue={"0"}
+                {...register("attribute_group_id")}
                 className="styled-input"
                 onChange={onAttributeGroupChange}
               >
@@ -205,7 +244,10 @@ const Create = () => {
           </div>
 
           <div className="flex flex-row gap-4">
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-1/3">
+              <label className="block text-sm/6 font-medium text-gray-900 mt-3">
+                ویژگی ها
+              </label>
               <Table columns={["ردیف", "نام", "مقدار"]}>
                 {formState.attributes.length > 0 ? (
                   formState.attributes.map((attr, index) => (
@@ -223,7 +265,7 @@ const Create = () => {
                       </td>
                       <td className="text-right py-4 px-6 border-l border-gray-200 text-gray-700">
                         <input
-                          {...register(`attributes.${index}`)}
+                          {...register(`attribute_values.${index}`)}
                           placeholder="مقدار را با هر نوع اطلاعات بیشتر پر کنید"
                           type="text"
                           className="styled-input"
@@ -238,6 +280,80 @@ const Create = () => {
                       className="text-center py-4 px-6 text-gray-500"
                     >
                       هیچ گروه ویژگی انتخاب نشده !
+                    </td>
+                  </tr>
+                )}
+              </Table>
+            </div>
+
+            <div className="flex flex-col w-3/4">
+              <label className="block text-sm/6 font-medium text-gray-900">
+                عکس های آپلود شده
+                <button
+                  type="button"
+                  onClick={() => fetchMedia()}
+                  className="bg-red-500 text-white py-2 px-2 rounded-full hover:bg-red-600 shadow-md transition-all duration-150 mx-2 mb-1"
+                >
+                  <ArrowClockwise />
+                </button>
+              </label>
+              <Table
+                columns={["نوع فایل", "حجم", "تاریخ آپلود", "عملیات"]}
+                error={mediaFetchError}
+                loading={isPending}
+              >
+                {Array.isArray(medias) && medias.length > 0 ? (
+                  medias.map((media, index) => (
+                    <tr
+                      key={index}
+                      className={`border-b ${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      } hover:bg-gray-100 transition-colors duration-200`}
+                    >
+                      <td className="styled-table-cell">{media.extension}</td>
+                      <td className="styled-table-cell">
+                        {Number(media.size) / (1024 * 1024) > 1
+                          ? (Number(media.size) / (1024 * 1024)).toFixed(2) +
+                            "Mb"
+                          : (Number(media.size) / 1024).toFixed(2) + "Kb"}
+                      </td>
+                      <td className="styled-table-cell">{media.uploadedAt}</td>
+                      <td className="styled-table-cell">
+                        <div className="flex justify-center items-center me-2">
+                          <a
+                            target="_blank"
+                            href={`${MEDIA_SHOW_URL}${media.name}`}
+                            className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"
+                          >
+                            نمایش
+                          </a>
+                          <button
+                            onClick={() => {
+                              onOpenModal({
+                                id: media.name,
+                                name: "عکس آپلود شده با فرمت" + media.extension,
+                                title: "فایل",
+                              });
+                            }}
+                            type="button"
+                            className="bg-red-500 text-white py-2 px-5 rounded-lg hover:bg-red-600 shadow-md transition-all duration-150 mx-2"
+                          >
+                            حذف
+                          </button>
+                          <button
+                            type="button"
+                            className="bg-blue-500 text-white py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
+                          >
+                            پس زمینه
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="styled-table-cell">
+                      No media available
                     </td>
                   </tr>
                 )}
@@ -272,80 +388,3 @@ const Create = () => {
 };
 
 export default Create;
-
-{
-  // const title = useRef<HTMLInputElement>(null);
-  // const count = useRef<HTMLInputElement>(null);
-  // const price = useRef<HTMLInputElement>(null);
-  // const description = useRef<HTMLTextAreaElement>(null);
-  /* <Select
-                value={formState.tags}
-                onChange={(value) =>
-                  setFormState({ ...formState, tags: value })
-                }
-                options={responseData.tags}
-                primaryColor={"indigo"}
-                isSearchable={true}
-                placeholder={"انتخاب کنید ..."}
-                searchInputPlaceholder={"جستجو ..."}
-                isMultiple={true}
-                classNames={{
-                  searchIcon:
-                    "absolute w-5 h-5 mt-2.5 pb-0.5 mr-0.5 ml-4 text-gray-500",
-                  searchBox:
-                    "w-full py-2 pr-6 text-sm text-gray-500 bg-gray-100 border border-gray-200 rounded focus:border-gray-200 focus:ring-0 focus:outline-none",
-                }}
-              /> */
-}
-
-//   try {
-//     const formData = new FormData(event.currentTarget);
-
-//     const attributes = formState.attributes.reduce((acc, attr) => {
-//       const value = formData.get(`attribute_${attr.id}`) || "";
-//       if (value) acc[attr.id] = value.toString();
-//       return acc;
-//     }, {} as { [key: string]: string });
-
-//     const metadata = {
-//       // title: title.current?.value,
-//       // count: count.current?.value,
-//       // price: price.current?.value.replace(/,/g, ""),
-//       category: formState.category,
-//       // service: formState.service,
-//       // description: description.current?.value,
-//       attributes: attributes,
-//       hero_image: formData.get("hero_image"),
-//       tags: Array.isArray(formState.tags)
-//         ? formState.tags.map(({ value }) => value)
-//         : [],
-//     };
-//     formData.append("metadata", JSON.stringify(metadata));
-//     // postProductForm.mutate(formData);
-//   } catch (error) {
-//     console.error("Error submitting form:", error);
-//   }
-{
-  /* <div className="flex flex-col w-1/3">
-              <label className="block text-sm font-medium text-gray-900">
-                خدمات
-              </label>
-            <select
-                defaultValue={"0"}
-                className="styled-input"
-                onChange={(event) =>
-                  setFormState({ ...formState, service: event.target.value })
-                }
-              >
-                <option value={"0"}>انتخاب کنید ...</option>
-                {responseData.services?.map((service, index) => (
-                  <option value={service.id} key={index}>
-                    {service.title}
-                  </option>
-                ))}
-              </select>
-            </div> */
-}
-// const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
-//   event.preventDefault();
-// };

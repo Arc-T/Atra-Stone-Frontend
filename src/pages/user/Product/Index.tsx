@@ -4,6 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 import ApiClient from "../../../services/apiClient";
 import { toast } from "react-toastify";
 import { Products } from "../../../types/admin";
+import { generateUrl } from "../../../services/general";
+import { PRODUCT_DETAILS_API } from "../../../types/url";
 
 export default function Index() {
   const apiCall = new ApiClient("products/index");
@@ -39,7 +41,13 @@ export default function Index() {
               className="group relative border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
             >
               <img
-                // src={`${SERVER_URL}/medias/products/${product.id}/${product.name}`}
+                  src={generateUrl(PRODUCT_DETAILS_API, {
+                    productId: product.id,
+                    productName: product.productMedia
+                      ? product.productMedia.find((item) => item.order === 1)
+                          ?.name ?? "Default Name"
+                      : "Default Name",
+                  })}
                 className="aspect-square w-full rounded-t-lg bg-gray-100 object-cover group-hover:opacity-80 transition-opacity duration-300 lg:aspect-auto lg:h-80"
               />
               <div className="p-4">

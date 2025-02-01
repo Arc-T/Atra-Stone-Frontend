@@ -1,10 +1,11 @@
 import useModalStore from "../contexts/modalStore";
+import { DELETE_MODAL_TEXT_BODY } from "../types/messages";
 
 interface Props {
   onSubmit(): void;
 }
 
-export const Modal = ({ onSubmit }: Props) => {
+export const DeleteModal = ({ onSubmit }: Props) => {
   const { modalProps, isModalOpen, onCloseModal } = useModalStore();
 
   if (isModalOpen)
@@ -51,9 +52,7 @@ export const Modal = ({ onSubmit }: Props) => {
                       </h3>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          آیا مطمئن به حذف آیتم مورد نظر هستید؟ دقت داشته باشید
-                          در صورت تایید، آیتم به صورت دائم در سیستم حذف خواهد
-                          شد.
+                          {DELETE_MODAL_TEXT_BODY}
                         </p>
                       </div>
                     </div>
@@ -63,7 +62,10 @@ export const Modal = ({ onSubmit }: Props) => {
                   <button
                     type="submit"
                     className="inline-flex w-full justify-center rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:mr-3 sm:w-auto"
-                    onClick={onSubmit}
+                    onClick={() => {
+                      onCloseModal();
+                      onSubmit();
+                    }}
                   >
                     تایید
                   </button>

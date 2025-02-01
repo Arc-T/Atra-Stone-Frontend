@@ -4,13 +4,13 @@ export interface Products {
   price: number;
   count: number;
   name: string;
-  image?: string;
   description?: string;
   createdAt: string;
+  productMedia?: Media[];
 }
 
 export interface ModalProps {
-  id: number;
+  id: string;
   name: string;
   title: string;
 }
@@ -63,4 +63,12 @@ export interface ProductCreateDetails {
   services: Service[];
   categories: Category[];
   attributes_group: AttributeGroup[];
+}
+
+export interface Media {
+  name: string;
+  size: number;
+  order: number;
+  extension: string;
+  created_at: string;
 }

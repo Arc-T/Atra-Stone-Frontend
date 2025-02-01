@@ -1,28 +1,66 @@
-import { useState } from "react";
-import { Image } from "react-bootstrap-icons";
+import { FormEvent, useState } from "react";
 import FileDropzone from "./Dropzone";
+import { Image } from "react-bootstrap-icons";
+import { uploadMedia } from "../services/productService";
+import { SYNCING_MSG, UPLOADING_MSG } from "../types/messages";
 
-const UploadModal = () => {
-  const [isOpen, setIsOpen] = useState(true);
+interface props {
+  onUploadedFiles: () => void;
+}
+
+const UploadModal = ({ onUploadedFiles }: props) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [files, setFiles] = useState([] as File[]);
 
-  const onFileUpload = () => {  
-    console.log(
-      "___________________________ FILES ___________________________"
-    );
+  const onFileUpload = (medias: File[]) => setFiles(medias);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = new FormData();
+    files.forEach((file) => form.append("files", file));
+
+    uploadMedia(form, (percentage) => {
+      setProgress(percentage);
+      if (percentage === 100) setIsOpen(false);
+    }).then(() => {
+      onUploadedFiles();
+      setProgress(0);
+    });
   };
 
   return (
     <>
+      {progress > 0 && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="flex flex-col justify-center items-center space-y-4 bg-white p-6 rounded-lg shadow-lg">
+            <div
+              className={`ml-2 w-12 h-12 border-4 border-t-4 border-gray-200 border-solid rounded-full animate-spin ${
+                progress < 100 ? "border-t-red-500" : "border-t-green-500"
+              }`}
+            ></div>
+            <p className="text-lg font-medium text-gray-700">
+              {progress < 100 ? UPLOADING_MSG : SYNCING_MSG}
+            </p>
+            {progress < 100 && (
+              <p className="text-lg font-medium text-gray-700">
+                {progress + "%"}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
       <button
         onClick={() => setIsOpen(true)}
         className="flex flex-col justify-center items-center bg-blue-500 text-white px-5 py-4 rounded-full hover:bg-blue-600 shadow-md transition-all duration-150 fixed left-4 bottom-4"
       >
-        <Image className="text-2xl font-bold"></Image>
+        <Image className="text-2xl font-bold" />
         <p>تصاویر</p>
       </button>
       {isOpen && (
-        <form>
+        <form onSubmit={handleSubmit}>
           <div
             className="relative z-10"
             aria-labelledby="modal-title"
@@ -43,10 +81,7 @@ const UploadModal = () => {
                   <div className="sm:flex sm:items-start">
                     <div className="mt-3 text-center sm:text-left w-full">
                       {/* <!-- Replace this FileDropzone with actual component rendering --> */}
-                      <FileDropzone
-                        hasHero={true}
-                        onFilesChange={onFileUpload}
-                      />
+                      <FileDropzone onFilesChange={onFileUpload} />
                     </div>
                   </div>
                 </div>
@@ -64,7 +99,6 @@ const UploadModal = () => {
                   <button
                     type="submit"
                     className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-500 transition-colors"
-                    // onClick={onSubmit}
                   >
                     آپلود
                   </button>

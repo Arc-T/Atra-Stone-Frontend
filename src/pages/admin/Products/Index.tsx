@@ -24,7 +24,7 @@ export default function Index() {
 
   return (
     <div className="bg-white shadow-md rounded-lg py-4 px-4">
-      <nav>
+      <nav className="mb-4">
         <div className="flex space-x-6 rtl:space-x-reverse text-gray-400 border-b-2 border-gray-200">
           {tabs.map(({ path, label }, index) => (
             <Link
@@ -44,7 +44,7 @@ export default function Index() {
           ))}
         </div>
       </nav>
-      <Outlet />
+      <Outlet/>
     </div>
   );
 }
