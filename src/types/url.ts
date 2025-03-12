@@ -1,8 +1,8 @@
 // export const SERVER_URL = 'https://atrastones.com/api/v1'
 
 const BASE_URL = "http://localhost:8080/";
-// const BASE_URL = "https://atrastones.com/";
-const API_VERSION = "api/v1/";
+// const BASE_URL = "https://api.atrastones.com/";
+const API_VERSION = "v1/";
 
 export const SERVER_URL = BASE_URL;
 export const SERVER_API_VERSION = API_VERSION;

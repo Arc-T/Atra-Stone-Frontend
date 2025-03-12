@@ -5,8 +5,8 @@ export interface Products {
   count: number;
   name: string;
   description?: string;
-  createdAt: string;
-  productMedia?: Media[];
+  created_at: string;
+  product_media?: Media[];
 }
 
 export interface ModalProps {
@@ -70,5 +70,5 @@ export interface Media {
   size: number;
   order: number;
   extension: string;
-  created_at: string;
+  uploaded_at: string;
 }

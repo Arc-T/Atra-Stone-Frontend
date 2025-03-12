@@ -1,7 +1,7 @@
-import { Attributes, useEffect, useState } from "react";
+import { Attributes, useEffect} from "react";
 import { StarFill } from "react-bootstrap-icons";
 import ApiClient from "../../../services/apiClient";
-import { AttributeValue, ProductMedia, Tag } from "../../../types/admin";
+// import { AttributeValue, ProductMedia, Tag } from "../../../types/admin";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
@@ -27,12 +27,12 @@ interface ProductInfo {
   tags: number;
 }
 
-interface Response {
-  details: ProductInfo;
-  attributes: AttributeValue[];
-  tags: Tag[];
-  medias: ProductMedia[];
-}
+// interface Response {
+//   details: ProductInfo;
+//   attributes: AttributeValue[];
+//   tags: Tag[];
+//   medias: ProductMedia[];
+// }
 
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
@@ -43,15 +43,15 @@ function classNames(...classes: string[]) {
 export default function Show() {
   const apiCall = new ApiClient("");
 
-  const [product, setProduct] = useState<{
-    details: ProductInfo;
-    attributes: AttributeValue[];
-    medias: ProductMedia[];
-  }>({
-    details: {} as ProductInfo,
-    attributes: [],
-    medias: [],
-  });
+  // const [product, setProduct] = useState<{
+  //   details: ProductInfo;
+  //   attributes: AttributeValue[];
+  //   medias: ProductMedia[];
+  // }>({
+  //   details: {} as ProductInfo,
+  //   attributes: [],
+  //   medias: [],
+  // });
 
   const getProductInfo = useMutation({
     mutationFn: (id: number) => {

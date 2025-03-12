@@ -12,8 +12,9 @@ import AttributeIndex from "./pages/admin/Attributes/Index.tsx";
 import CheckToken from "./middleware/CheckToken.tsx";
 import Create from "./pages/admin/Products/Create.tsx";
 import ProductsList from "./pages/user/Product/Index.tsx";
-import ProductDetails from "./pages/user/Product/Show.tsx";
-import Edit from "./pages/admin/Products/Edit.tsx";
+import AcademyIndex from "./pages/user/Academy/Index.tsx";
+// import ProductDetails from "./pages/user/Product/Show.tsx";
+// import Edit from "./pages/admin/Products/Edit.tsx";
 
 const router = createBrowserRouter([
   {
@@ -40,10 +41,10 @@ const router = createBrowserRouter([
             path: "create",
             element: <Create />,
           },
-          {
-            path: ":productId?/edit",
-            element: <Edit />,
-          },
+          // {
+          //   path: ":productId?/edit",
+          //   element: <Edit />,
+          // },
         ],
       },
       {
@@ -72,13 +73,17 @@ const router = createBrowserRouter([
         element: <CustomerHome />,
       },
       {
-        path: "/gallery",
+        path: "/products",
         element: <ProductsList />,
       },
       {
-        path: ":productId?/details",
-        element: <ProductDetails />,
+        path: "/academy",
+        element: <AcademyIndex />,
       },
+      // {
+      //   path: ":productId?/details",
+      //   element: <ProductDetails />,
+      // },
     ],
   },
 ]);

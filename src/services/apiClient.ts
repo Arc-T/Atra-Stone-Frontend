@@ -32,6 +32,7 @@ axiosInstance.interceptors.request.use((config) => {
   }
   console.log(config.headers);
   console.log(config.baseURL);
+  console.log(config.url);
   console.log(config.auth);
   console.log(config.data);
   return config;

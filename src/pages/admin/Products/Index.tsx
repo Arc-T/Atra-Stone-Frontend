@@ -5,7 +5,7 @@ export default function Index() {
   const tabs = [
     { label: "لیست محصولات", path: "list" },
     { label: "ایجاد محصولات", path: "create" },
-    { label: "ویرایش محصول", path: "edit" },
+    // { label: "ویرایش محصول", path: "edit" },
   ];
 
   const location = useLocation();

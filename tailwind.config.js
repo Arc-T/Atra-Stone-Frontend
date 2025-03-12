@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import { colors, getNeutral, getThemeColors } from './src/styles/theme'
+import { colors, getNeutral, getThemeColors } from "./src/styles/theme";
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 export default {
@@ -10,7 +10,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Vazirmatn", "Shabnam", ...defaultTheme.fontFamily.sans],
+        sans: [
+          "Vazirmatn",
+          "Shabnam",
+          "Dynalight",
+          ...defaultTheme.fontFamily.sans,
+        ],
       },
       colors: {
         dark: getNeutral("dark"),

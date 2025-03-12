@@ -29,45 +29,86 @@ export default function Index() {
 
   return (
     <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         {/* <h2 className="text-2xl font-bold tracking-tight text-gray-900">
           Customers also purchased
         </h2> */}
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="group relative border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
-            >
-              <img
-                  src={generateUrl(PRODUCT_DETAILS_API, {
-                    productId: product.id,
-                    productName: product.productMedia
-                      ? product.productMedia.find((item) => item.order === 1)
-                          ?.name ?? "Default Name"
-                      : "Default Name",
-                  })}
-                className="aspect-square w-full rounded-t-lg bg-gray-100 object-cover group-hover:opacity-80 transition-opacity duration-300 lg:aspect-auto lg:h-80"
-              />
-              <div className="p-4">
-                <div>
-                  <h3 className="text-md text-gray-600 truncate">
-                    <Link to={`/${product.id}/details`}>
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {product.title}
-                    </Link>
-                  </h3>
-                </div>
-                <div className="flex justify-between items-start mt-4">
-                  <p className="text-sm font-semibold text-gray-900">
-                    {Number(product.price).toLocaleString()} تومان
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">{product.count} عدد</p>
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-5 xl:gap-x-8">
+          {/* Filters Column */}
+          <div className="col-span-1 rounded-md border border-gray-300 p-4">
+              <div className="mb-6">
+                <label htmlFor="category" className="text-emerald-800">فیلتر ها</label>
+                <select id="category" className="border rounded p-2 w-full">
+                  <option value="all">All Categories</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="fashion">Fashion</option>
+                  <option value="home">Home</option>
+                </select>
+              </div>
+
+              <div className="mb-6">
+                <label htmlFor="min-price">Price Range</label>
+                <div className="flex space-x-4">
+                  <input
+                    type="number"
+                    name="min"
+                    className="border rounded p-2 w-full"
+                    placeholder="Min Price"
+                  />
+                  <input
+                    type="number"
+                    name="max"
+                    className="border rounded p-2 w-full"
+                    placeholder="Max Price"
+                  />
                 </div>
               </div>
+          </div>
+
+          {/* Products Column */}
+          <div className="col-span-4">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="group relative border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+                >
+                  <img
+                    src={generateUrl(PRODUCT_DETAILS_API, {
+                      productId: product.id,
+                      productName: product.product_media
+                        ? product.product_media.find((item) => item.order === 1)
+                            ?.name ?? "Default Name"
+                        : "Default Name",
+                    })}
+                    className="aspect-square w-full rounded-t-lg bg-gray-100 object-cover group-hover:opacity-80 transition-opacity duration-300 lg:aspect-auto lg:h-80"
+                  />
+                  <div className="p-4">
+                    <div>
+                      <h3 className="text-md text-gray-600 truncate">
+                        <Link to={`/${product.id}/details`}>
+                          <span
+                            aria-hidden="true"
+                            className="absolute inset-0"
+                          />
+                          {product.title}
+                        </Link>
+                      </h3>
+                    </div>
+                    <div className="flex justify-between items-start mt-4">
+                      <p className="text-sm font-semibold text-gray-900">
+                        {Number(product.price).toLocaleString()} تومان
+                      </p>
+                      <p className="mt-1 text-sm text-gray-500">
+                        {product.count} عدد
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>

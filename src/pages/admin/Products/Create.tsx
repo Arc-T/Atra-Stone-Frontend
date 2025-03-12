@@ -47,15 +47,15 @@ interface FormValues {
 
 const Create = () => {
   const { onOpenModal, isModalOpen, modalProps } = useModalStore();
-
-  const { register, handleSubmit, setValue } = useForm<FormValues>();
+  const { register, handleSubmit} = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    const formTags = Array.isArray(formState.tags)
+    data.tags = Array.isArray(formState.tags)
       ? formState.tags.map((item) => item.value)
       : [];
-    setValue("tags", formTags);
-    data.attribute_values.filter((attr) => attr.trim() !== "");
+    data.attribute_values = data.attribute_values.filter(
+      (attr) => attr.trim().length > 1
+    );
     storeProduct(data);
   };
 
@@ -206,6 +206,7 @@ const Create = () => {
               <Select
                 onChange={(value) => {
                   setFormState({ ...formState, tags: value });
+                  console.log(value);
                 }}
                 value={formState.tags}
                 options={responseData.tags}
@@ -317,7 +318,7 @@ const Create = () => {
                             "Mb"
                           : (Number(media.size) / 1024).toFixed(2) + "Kb"}
                       </td>
-                      <td className="styled-table-cell">{media.uploadedAt}</td>
+                      <td className="styled-table-cell">{media.uploaded_at}</td>
                       <td className="styled-table-cell">
                         <div className="flex justify-center items-center me-2">
                           <a

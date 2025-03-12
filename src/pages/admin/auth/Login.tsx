@@ -1,12 +1,13 @@
-import { FormEvent, useRef } from "react";
-import ApiClient from "../../../services/apiClient.ts";
-import { useMutation } from "@tanstack/react-query";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
-import { LoginInputs, TokenResponse } from "./authType.ts";
-import { ToastContainer, toast } from "react-toastify";
-import { ADMIN_HOMEPAGE, USER_LOGIN_API } from "../../../types/url.ts";
-import { AUTH_FAILED } from "../../../types/messages.ts";
+import { Navigate, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { ADMIN_HOMEPAGE } from "../../../types/url.ts";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useAuth } from "../../../hooks/useUser.ts";
+
+interface FormValues {
+  phone: string;
+  password: string;
+}
 
 export default function Login() {
   if (localStorage.getItem("token"))
@@ -14,37 +15,11 @@ export default function Login() {
 
   const { state } = useLocation();
 
-  const navigate = useNavigate();
+  const { mutate: authenticate } = useAuth();
 
-  const phoneRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
+  const onSubmit: SubmitHandler<FormValues> = (data) => authenticate(data);
 
-  const loginMutation = useMutation<string, AxiosError, LoginInputs>({
-    mutationFn: (inputs: LoginInputs) => {
-      return new ApiClient(USER_LOGIN_API)
-        .postRequest<TokenResponse>(inputs)
-        .then((response) => response.token);
-    },
-    onSuccess: (token) => {
-      localStorage.setItem("token", token);
-      navigate(`/${ADMIN_HOMEPAGE}`);
-    },
-    onError: () => {
-      toast.error(AUTH_FAILED);
-    },
-  });
-
-  const formAction = (event: FormEvent) => {
-    event.preventDefault();
-    const phone = phoneRef.current?.value;
-    const password = passwordRef.current?.value;
-
-    if (!phone || !password) {
-      return;
-    }
-
-    loginMutation.mutate({ phone, password });
-  };
+  const { register, handleSubmit } = useForm<FormValues>();
 
   return (
     <>
@@ -69,7 +44,11 @@ export default function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form method="POST" className="space-y-6" onSubmit={formAction}>
+          <form
+            method="POST"
+            className="space-y-6"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div>
               <label
                 htmlFor="mobile"
@@ -79,11 +58,9 @@ export default function Login() {
               </label>
               <div className="mt-2">
                 <input
-                  ref={phoneRef}
+                  {...register("phone")}
                   id="mobile"
-                  name="mobile"
                   type="text"
-                  required
                   autoComplete="mobile tel"
                   className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 />
@@ -109,11 +86,9 @@ export default function Login() {
               </div>
               <div className="mt-2">
                 <input
-                  ref={passwordRef}
+                  {...register("password")}
                   id="password"
-                  name="password"
                   type="password"
-                  required
                   autoComplete="current-password"
                   className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 />

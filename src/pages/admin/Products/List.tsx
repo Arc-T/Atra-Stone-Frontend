@@ -47,8 +47,8 @@ const List = () => {
                   className="w-12 h-12 rounded-full ml-2"
                   src={generateUrl(PRODUCT_DETAILS_API, {
                     productId: product.id,
-                    productName: product.productMedia
-                      ? product.productMedia.find((item) => item.order === 1)
+                    productName: product.product_media
+                      ? product.product_media.find((item) => item.order === 1)
                           ?.name ?? "Default Name"
                       : "Default Name",
                   })}
