@@ -16,7 +16,6 @@ import { AxiosError } from "axios";
 import {
   deleteTempMedia,
   getCreateDetails,
-  showAttributeGroupAttributes,
   storeProduct,
 } from "../../../services/productService";
 import {
@@ -27,7 +26,7 @@ import {
   MULTISELECT_SEARCH_PLACEHOLDER,
 } from "../../../types/messages";
 import UploadModal from "../../../components/UploadModal";
-import { AttributeGroup, Category, Attributes } from "../../../types/admin";
+import { Category, Attribute } from "../../../types/admin";
 import { useFetchMedia } from "../../../hooks/useProducts";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import { MEDIA_SHOW_URL } from "../../../types/url";
@@ -47,7 +46,7 @@ interface FormValues {
 
 const Create = () => {
   const { onOpenModal, isModalOpen, modalProps } = useModalStore();
-  const { register, handleSubmit} = useForm<FormValues>();
+  const { register, handleSubmit } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     data.tags = Array.isArray(formState.tags)
@@ -75,13 +74,12 @@ const Create = () => {
   } = useFetchMedia();
 
   const [formState, setFormState] = useState({
-    attributes: [] as Attributes[],
+    attributes: [] as Attribute[],
     tags: null as SelectValue,
   });
 
   const [responseData, setResponseData] = useState({
     // services: [] as Service[],
-    attributesGroup: [] as AttributeGroup[],
     categories: [] as Category[],
     tags: [] as Option[],
   });
@@ -106,15 +104,6 @@ const Create = () => {
       );
     fetchMedia();
   }, []);
-
-  const onAttributeGroupChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const selectedGroup = Number(event.target.value);
-    showAttributeGroupAttributes(selectedGroup)
-      .then((data) =>
-        setFormState((prev) => ({ ...prev, attributes: data || [] }))
-      )
-      .catch((error) => console.error("Error fetching attributes:", error));
-  };
 
   return (
     <>
@@ -222,25 +211,6 @@ const Create = () => {
                     "w-full py-2 pr-6 text-sm text-gray-500 bg-gray-100 border border-gray-200 rounded focus:border-gray-200 focus:ring-0 focus:outline-none",
                 }}
               />
-            </div>
-
-            <div className="flex flex-col w-1/2">
-              <label className="block text-sm font-medium text-gray-900">
-                گروه ویژگی
-              </label>
-              <select
-                defaultValue={"0"}
-                {...register("attribute_group_id")}
-                className="styled-input"
-                onChange={onAttributeGroupChange}
-              >
-                <option value={"0"}>{MULTISELECT_PLACEHOLDER}</option>
-                {responseData.attributesGroup?.map((attributeGroup, index) => (
-                  <option value={attributeGroup.id} key={index}>
-                    {attributeGroup.title}
-                  </option>
-                ))}
-              </select>
             </div>
           </div>
 

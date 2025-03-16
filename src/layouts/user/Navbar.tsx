@@ -1,5 +1,5 @@
 import { Book, Box, House, Phone } from "react-bootstrap-icons";
-import logo from "../../assets/images/logo.jpg";
+import logo from "../../assets/images/emerald logo.png";
 import { Link } from "react-router-dom";
 
 interface props {
@@ -10,9 +10,9 @@ interface props {
 
 const Navbar = ({ theme }: props) => {
   return (
-    <header className={`${theme} transition-colors duration-1000 shadow-md`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 m-4">
+    <header className={`${theme} transition-colors opacity-85 shadow-md`}>
+      <div className="max-w-screen-2xl mx-auto px-8">
+        <div className="flex justify-between items-center h-16 my-4">
           {/* Logo */}
           <div className="flex-shrink-0">
             <img src={logo} alt="Logo" className="w-auto h-24 object-contain" />
@@ -55,7 +55,7 @@ const Navbar = ({ theme }: props) => {
               to="/"
               className="text-5xl font-thin text-white font-[Dynalight]"
             >
-              River Stones Art
+              Atra Stones Accessory
             </Link>
           </div>
 

@@ -46,7 +46,7 @@ export default function Home() {
                     دهیم!
                   </p>
                   <button className="w-full bg-emerald-500 text-white py-2 px-4 rounded-lg hover:bg-emerald-600 transition-colors duration-200">
-                    <Link to={"/products"}>مشاهده محصولات</Link>
+                    <Link to={"/economic-products"}>مشاهده محصولات</Link>
                   </button>
                 </div>
               </div>
@@ -83,7 +83,7 @@ export default function Home() {
                     محصولات خاص
                   </p>
                   <button className="w-full bg-red-700 text-white py-2 px-4 rounded-lg hover:bg-red-900 transition-colors duration-200">
-                    <Link to={"/order-product"}> مشاهده بیشتر</Link>
+                    <Link to={"/custom-products"}> مشاهده بیشتر</Link>
                   </button>
                 </div>
               </div>

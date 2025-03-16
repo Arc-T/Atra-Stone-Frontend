@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { AUTH_FAILED } from "../types/messages";
+import { AUTH_FAILED_MSG } from "../types/messages";
 import { toast } from "react-toastify";
 import { ADMIN_HOMEPAGE } from "../types/url";
 import { LoginInputs } from "../pages/admin/auth/authType";
@@ -18,7 +18,7 @@ export const useAuth = () => {
       navigate(`/${ADMIN_HOMEPAGE}`);
     },
     onError: (error:AxiosError) => {
-      toast.error(AUTH_FAILED);
+      toast.error(AUTH_FAILED_MSG);
       console.log(error.cause);
       console.log(error.message);
       console.log(error.name);

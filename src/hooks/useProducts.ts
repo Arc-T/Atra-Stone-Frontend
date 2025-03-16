@@ -1,11 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Products } from "../types/admin";
-import { deleteProductById, getProducts, getUploadedMedia } from "../services/productService";
+import {
+  deleteProductById,
+  getProducts,
+  getUploadedMedia,
+  showProductInfo,
+} from "../services/productService";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import {
   DELETE_FAILED_MSG,
   DELETE_SUCCESS_MSG,
+  FETCH_FAILED_MSG,
 } from "../types/messages";
 
 export const useFetchProducts = () => {
@@ -26,6 +32,15 @@ export const useDeleteProduct = () => {
   });
 };
 
+export const useShowProduct = () => {
+  return useMutation({
+    mutationFn: (id: number) => showProductInfo(id),
+    onError: () => {
+      toast.error(FETCH_FAILED_MSG);
+    },
+  });
+};
+
 export const useFetchMedia = () => {
   return useMutation({
     mutationFn: () => getUploadedMedia(),
@@ -33,5 +48,3 @@ export const useFetchMedia = () => {
       toast.error(`${DELETE_FAILED_MSG}\n${error.message}`),
   });
 };
-
-

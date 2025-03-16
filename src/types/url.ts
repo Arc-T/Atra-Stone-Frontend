@@ -20,6 +20,7 @@ export const USER_LOGIN_API = "users/auth/sign-in";
 export const PRODUCT_LIST_API = "products/index";
 export const PRODUCT_STORE_API = "products/store";
 export const PRODUCT_CREATE_API = "products/create";
+export const PRODUCT_SHOW_API = "products/{productId}/show";
 export const PRODUCT_DELETE_API = "products/{productId}/delete";
 export const PRODUCT_DETAILS_API = "media/products/{productId}/{productName}";
 
@@ -36,4 +37,8 @@ export const MEDIA_TEMP_DELETE_API = "media/{mediaName}/delete-tmp";
 /* ************************* MEDIA URL  ************************* */
 export const MEDIA_SHOW_URL = `${BASE_URL}media/products/tmp/`;
 
+/* ************************* ATTRIBUTES  ************************* */
+export const ATTRIBUTE_STORE_API = "attributes/store";
+export const ATTRIBUTE_INDEX_API = "attributes/index";
+export const ATTRIBUTE_DELETE_API = "attributes/{attributeId}/delete";
 export const ATTRIBUTE_GROUP_SHOW_API = "attributes/{attributeGroupId}/show";

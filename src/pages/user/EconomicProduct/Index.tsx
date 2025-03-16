@@ -28,7 +28,6 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         {/* <h2 className="text-2xl font-bold tracking-tight text-gray-900">
           Customers also purchased
@@ -37,37 +36,63 @@ export default function Index() {
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-5 xl:gap-x-8">
           {/* Filters Column */}
           <div className="col-span-1 rounded-md border border-gray-300 p-4">
-              <div className="mb-6">
-                <label htmlFor="category" className="text-emerald-800">فیلتر ها</label>
-                <select id="category" className="border rounded p-2 w-full">
-                  <option value="all">All Categories</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="fashion">Fashion</option>
-                  <option value="home">Home</option>
-                </select>
-              </div>
+            <div className="mb-6">
+              <label htmlFor="category" className="text-emerald-800">
+                فیلتر ها
+              </label>
+              <select id="category" className="border rounded p-2 w-full">
+                <option value="all">All Categories</option>
+                <option value="electronics">Electronics</option>
+                <option value="fashion">Fashion</option>
+                <option value="home">Home</option>
+              </select>
+            </div>
 
-              <div className="mb-6">
-                <label htmlFor="min-price">Price Range</label>
-                <div className="flex space-x-4">
-                  <input
-                    type="number"
-                    name="min"
-                    className="border rounded p-2 w-full"
-                    placeholder="Min Price"
-                  />
-                  <input
-                    type="number"
-                    name="max"
-                    className="border rounded p-2 w-full"
-                    placeholder="Max Price"
-                  />
-                </div>
+            <div className="mb-6">
+              <label htmlFor="min-price">Price Range</label>
+              <div className="flex space-x-4">
+                <input
+                  type="number"
+                  name="min"
+                  className="border rounded p-2 w-full"
+                  placeholder="Min Price"
+                />
+                <input
+                  type="number"
+                  name="max"
+                  className="border rounded p-2 w-full"
+                  placeholder="Max Price"
+                />
               </div>
+            </div>
           </div>
 
           {/* Products Column */}
           <div className="col-span-4">
+            {/* Filter Section */}
+            <div className="flex flex-wrap justify-start items-center gap-4 mb-6">
+
+              <div className="text-lg font-semibold text-gray-800">
+                مرتب سازی بر اساس:
+              </div>
+              <div className="flex space-x-reverse space-x-4">
+                {/* Filter Options */}
+                <button className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                  پربازدید ترین
+                </button>
+                <button className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                  ارزانترین
+                </button>
+                <button className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                  گرانترین
+                </button>
+                <button className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                  جدیدترین
+                </button>
+              </div>
+            </div>
+
+            {/* Product Grid */}
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
               {products.map((product) => (
                 <div
@@ -77,8 +102,8 @@ export default function Index() {
                   <img
                     src={generateUrl(PRODUCT_DETAILS_API, {
                       productId: product.id,
-                      productName: product.product_media
-                        ? product.product_media.find((item) => item.order === 1)
+                      productName: product.media
+                        ? product.media.find((item) => item.order === 1)
                             ?.name ?? "Default Name"
                         : "Default Name",
                     })}
@@ -87,7 +112,7 @@ export default function Index() {
                   <div className="p-4">
                     <div>
                       <h3 className="text-md text-gray-600 truncate">
-                        <Link to={`/${product.id}/details`}>
+                        <Link to={`${product.id}/details`}>
                           <span
                             aria-hidden="true"
                             className="absolute inset-0"
@@ -111,6 +136,5 @@ export default function Index() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

@@ -5,15 +5,15 @@ import Footer from "./Footer";
 import { useEffect, useState } from "react";
 
 export default function Rtl() {
-  
   const [color, setColor] = useState("");
 
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname.startsWith("/products")) setColor("bg-emerald-600");
+    if (location.pathname.startsWith("/economic-products"))
+      setColor("bg-emerald-700");
     else if (location.pathname.startsWith("/custom-products"))
-      setColor("bg-red-600");
+      setColor("bg-red-950");
     else if (location.pathname.startsWith("/academy")) setColor("bg-sky-600");
     else {
       setColor("bg-slate-900");
@@ -21,7 +21,10 @@ export default function Rtl() {
   }, [location.pathname]);
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex flex-col">
+    <div
+      className="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex flex-col"
+      // style={{ backgroundImage: `url(${background})` }}
+    >
       <ToastContainer
         position="top-left"
         rtl={true}
@@ -29,7 +32,7 @@ export default function Rtl() {
       />
       <Navbar theme={color} />
       {/* <div className="relative isolate px-6 pt-14 lg:px-8"> */}
-      <main className="flex-grow">
+      <main className="flex-grow bg-white">
         <Outlet />
       </main>
       {/* </div> */}

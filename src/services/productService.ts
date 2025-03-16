@@ -1,9 +1,10 @@
 import { ChangeEvent } from "react";
 import ApiClient from "./apiClient";
 import {
-  Attributes,
+  Attribute,
   Media,
   ProductCreateDetails,
+  ProductInfo,
   Products,
 } from "../types/admin";
 import { generateUrl } from "./general";
@@ -18,6 +19,7 @@ import {
   PRODUCT_CREATE_API,
   PRODUCT_DELETE_API,
   PRODUCT_LIST_API,
+  PRODUCT_SHOW_API,
   PRODUCT_STORE_API,
 } from "../types/url";
 
@@ -45,11 +47,18 @@ export const deleteProductById = (id: number) => {
   return axiosInstance.deleteRequest();
 };
 
+export const showProductInfo = (id: number) => {
+  const axiosInstance = new ApiClient(
+    generateUrl(PRODUCT_SHOW_API, { productId: id }, "API")
+  );
+  return axiosInstance.getRequest<ProductInfo>();
+};
+
 export const showAttributeGroupAttributes = (id: number) => {
   const axiosInstance = new ApiClient(
     generateUrl(ATTRIBUTE_GROUP_SHOW_API, { attributeGroupId: id }, "API")
   );
-  return axiosInstance.getRequest<Attributes[]>();
+  return axiosInstance.getRequest<Attribute[]>();
 };
 
 export const getUploadedMedia = () => {

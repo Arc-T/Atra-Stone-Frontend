@@ -13,7 +13,11 @@
 13-React Hook Form:npm i react-hook-form
 
 /\*\*
-** TODO: check user token shouldn't be in Home. \*** \*_ TODO: stale strategy of queries should be handled
+** TODO: check user token shouldn't be in Home. \*** 
+\*_ TODO: stale strategy of queries should be handled
 ** TODO: sidebar menu bug on double click (Products)
+** TODO: multi selects with react hook form register are hardcoded
 ** TODO: eager loading for pages
+** TODO: class name of react multi select has boiler plate styles
+** TODO: errors such network connection are not handled. login page for example doesn't say network connection error when backend is offline
 _/
