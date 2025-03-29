@@ -1,18 +1,17 @@
 import { ChangeEvent } from "react";
 import ApiClient from "./apiClient";
 import {
-  Attribute,
+  Category,
   Media,
-  ProductCreateDetails,
   ProductInfo,
   Products,
+  Tag,
 } from "../types/admin";
 import { generateUrl } from "./general";
 import { toast } from "react-toastify";
 import { UPLOAD_FAILED_MSG, UPLOAD_SUCCESS_MSG } from "../types/messages";
 import { AxiosError } from "axios";
 import {
-  ATTRIBUTE_GROUP_SHOW_API,
   MEDIA_TEMP_DELETE_API,
   MEDIA_TEMP_LIST_API,
   MEDIA_UPLOAD_API,
@@ -37,7 +36,7 @@ export const getProducts = () => {
 
 export const getCreateDetails = () => {
   const axiosInstance = new ApiClient(PRODUCT_CREATE_API);
-  return axiosInstance.getRequest<ProductCreateDetails>();
+  return axiosInstance.getRequest<{ tags: Tag[]; categories: Category[]}>();
 };
 
 export const deleteProductById = (id: number) => {
@@ -52,13 +51,6 @@ export const showProductInfo = (id: number) => {
     generateUrl(PRODUCT_SHOW_API, { productId: id }, "API")
   );
   return axiosInstance.getRequest<ProductInfo>();
-};
-
-export const showAttributeGroupAttributes = (id: number) => {
-  const axiosInstance = new ApiClient(
-    generateUrl(ATTRIBUTE_GROUP_SHOW_API, { attributeGroupId: id }, "API")
-  );
-  return axiosInstance.getRequest<Attribute[]>();
 };
 
 export const getUploadedMedia = () => {

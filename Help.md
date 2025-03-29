@@ -18,6 +18,7 @@
 ** TODO: sidebar menu bug on double click (Products)
 ** TODO: multi selects with react hook form register are hardcoded
 ** TODO: eager loading for pages
+** TODO: table could be better with (is-pending, empty result and <tr> style)
 ** TODO: class name of react multi select has boiler plate styles
 ** TODO: errors such network connection are not handled. login page for example doesn't say network connection error when backend is offline
 _/

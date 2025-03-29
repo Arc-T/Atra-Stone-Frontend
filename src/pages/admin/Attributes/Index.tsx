@@ -38,7 +38,7 @@ export default function Index() {
   const onMount = () => {
     fetchAttributeIndex()
       .then((data) => {
-        console.log(data);
+        console.log(data.categories);
         setFetchedData((prev) => ({
           ...prev,
           attributes: data.attributes,
@@ -86,7 +86,7 @@ export default function Index() {
             {isPending ? (
               <tr>
                 <td colSpan={5} className="text-center py-4 px-6 text-blue-500">
-                  در حال بارگذاری...
+                  در حال بارگذاری ...
                 </td>
               </tr>
             ) : fetchedData.attributes?.length > 0 ? (
@@ -104,9 +104,14 @@ export default function Index() {
                     {attr?.title || "نام تعریف نشده"}
                   </td>
                   <td className="text-right py-3 px-4 border-l border-gray-300 text-gray-700">
-                    {fetchedData.categories.find(
-                      (category) => category.id === attr.category_id
-                    )?.title || "N/A"}
+                    <span
+                      className="inline-flex items-center gap-2 px-4 py-2 ml-1 text-sm font-semibold rounded-full
+      bg-blue-50 text-blue-800 border border-blue-300 hover:bg-blue-100 transition-colors duration-300 ease-in-out"
+                    >
+                      {fetchedData.categories.find(
+                        (category) => category.id === attr.category_id
+                      )?.title || "N/A"}
+                    </span>
                   </td>
                   <td className="text-right py-3 px-4 border-l border-gray-300">
                     <span
@@ -174,18 +179,24 @@ export default function Index() {
                       : value
                       ? [value.value]
                       : [];
-                    console.log(categoryIds);
-
                     setFetchedData({
                       ...fetchedData,
                       categoryOptions: value,
                       selectedCategory: categoryIds[0],
                     });
                   }}
-                  options={fetchedData.categories.map((category) => ({
-                    value: String(category.id),
-                    label: category.title,
-                  }))}
+                  //TODO: Reusable maybe?
+                  options={fetchedData.categories
+                    .filter((item) => !item.parent_id)
+                    .map((parent) => ({
+                      label: parent.title,
+                      options: fetchedData.categories
+                        .filter((child) => child.parent_id === parent.id)
+                        .map((child) => ({
+                          value: child.id.toString(),
+                          label: child.title,
+                        })),
+                    }))}
                   primaryColor={"indigo"}
                   isSearchable={true}
                   isMultiple={false}

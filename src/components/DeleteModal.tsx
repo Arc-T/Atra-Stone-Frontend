@@ -6,6 +6,7 @@ interface Props {
 }
 
 export const DeleteModal = ({ onSubmit }: Props) => {
+  
   const { modalProps, isModalOpen, onCloseModal } = useModalStore();
 
   if (isModalOpen)

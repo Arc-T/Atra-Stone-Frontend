@@ -41,4 +41,9 @@ export const MEDIA_SHOW_URL = `${BASE_URL}media/products/tmp/`;
 export const ATTRIBUTE_STORE_API = "attributes/store";
 export const ATTRIBUTE_INDEX_API = "attributes/index";
 export const ATTRIBUTE_DELETE_API = "attributes/{attributeId}/delete";
-export const ATTRIBUTE_GROUP_SHOW_API = "attributes/{attributeGroupId}/show";
+/* ************************* CATEGORIES  ************************* */
+export const CATEGORY_INDEX_API = "categories/index";
+export const CATEGORY_DELETE_API = "categories/{categoryId}/delete";
+export const CATEGORY_STORE_API = "categories/store";
+export const CATEGORY_UPDATE_API = "categories/{categoryId}/update";
+export const CATEGORY_ATTRIBUTE_SHOW_API = "categories/{categoryId}/attributes";

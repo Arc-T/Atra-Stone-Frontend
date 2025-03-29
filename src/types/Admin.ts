@@ -32,7 +32,6 @@ export interface ModalProps {
   title: string;
 }
 
-
 export interface Attribute {
   id: number;
   title: string;
@@ -72,12 +71,11 @@ export interface ProductMedia {
 export interface Category {
   id: number;
   title: string;
-}
-
-export interface ProductCreateDetails {
-  tags: Tag[];
-  services: Service[];
-  categories: Category[];
+  url: string;
+  parent_id?: number;
+  categories?: Category[];
+  description: string;
+  title_sequence: string;
 }
 
 export interface Media {
