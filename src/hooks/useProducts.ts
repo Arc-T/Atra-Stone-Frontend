@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Products } from "../types/admin";
+import { Product } from "../types/admin";
 import {
   deleteProductById,
   getProducts,
@@ -15,7 +15,7 @@ import {
 } from "../types/messages";
 
 export const useFetchProducts = () => {
-  return useQuery<Products[]>({
+  return useQuery<Produc[]>({
     queryKey: ["products"],
     queryFn: () => getProducts(),
     staleTime: Infinity,

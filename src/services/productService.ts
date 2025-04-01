@@ -4,7 +4,7 @@ import {
   Category,
   Media,
   ProductInfo,
-  Products,
+  Product,
   Tag,
 } from "../types/admin";
 import { generateUrl } from "./general";
@@ -31,7 +31,7 @@ export const formatPrice = (event: ChangeEvent<HTMLInputElement>) => {
 
 export const getProducts = () => {
   const axiosInstance = new ApiClient(PRODUCT_LIST_API);
-  return axiosInstance.getRequest<Products[]>();
+  return axiosInstance.getRequest<Product[]>();
 };
 
 export const getCreateDetails = () => {

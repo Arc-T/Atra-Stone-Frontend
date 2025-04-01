@@ -17,51 +17,86 @@ import {
   MULTISELECT_SEARCH_PLACEHOLDER,
 } from "../../../types/messages";
 import UploadModal from "../../../components/UploadModal";
-import { Category, Attribute, Tag } from "../../../types/admin";
+import { Category, Attribute, Tag, Product } from "../../../types/admin";
 import { useFetchMedia } from "../../../hooks/useProducts";
 import { ArrowClockwise } from "react-bootstrap-icons";
 import { MEDIA_SHOW_URL } from "../../../types/url";
 import useModalStore from "../../../contexts/modalStore";
 import { DeleteModal } from "../../../components/DeleteModal";
 import { fetchCategoryAttributes } from "../../../services/attributeService";
+import PreShowProduct from "../../../components/PreShowProduct";
 
 interface FormValues {
   title: string;
   count: number;
   price: number;
   category_id: number;
-  tags: string[];
-  attribute_values: { id: number; value: string }[];
+  tags: number[];
+  attributes: { id: number; value: string }[];
   description: string;
 }
 
 const Create = () => {
   // ******************** FORM ******************** //
 
-  const { register, reset, handleSubmit } = useForm<FormValues>();
+  const { register, reset, setValue, formState, handleSubmit } =
+    useForm<FormValues>();
 
   const [multiSelect, setMultiSelect] = useState({
     attributes: null as SelectValue,
     tags: null as SelectValue,
+    categoryId: 0,
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    // data.tags = Array.isArray(multiSelect.tags)
-    //   ? multiSelect.tags.map((item) => item.value)
-    //   : [];
+  const onSubmit: SubmitHandler<FormValues> = (formBody) => {
+    formBody.tags = Array.isArray(multiSelect.tags)
+      ? multiSelect.tags.map((item) => Number(item.value))
+      : [];
 
-    // data.attribute_values = data.attribute_values.filter(
-    //   (item) => item.trim().length > 0
-    // );
-
-    data.attribute_values = data.attribute_values
+    formBody.attributes = formBody.attributes
       .map((attr, index) => ({
         ...attr,
         id: fetchedData.attributes[index]?.id,
       }))
       .filter((attr) => attr.value.trim() !== "");
 
-    console.log(data.attribute_values);
+    const category = fetchedData.categories?.find(
+      (item) => item.id === multiSelect.categoryId
+    );
+
+    const title =
+      category?.title +
+      " " +
+      category?.title_sequence
+        ?.split(",")
+        .map((id) => {
+          const attribute = formBody.attributes.find(
+            (attr) => attr.id === Number(id.trim())
+          );
+          const value = attribute?.value;
+
+          return value && value.trim() !== ""
+            ? value
+            : `[${
+                fetchedData.attributes.find(
+                  (attr) => attr.id === Number(id.trim())
+                )?.title
+              }]`;
+        })
+        .join(" ");
+
+    setPreShowProductInfo({
+      id: 0,
+      name: "",
+      media: medias,
+      count: formBody.count,
+      title: title,
+      price: formBody.price,
+      created_at: "",
+    });
+
+    setShouldShowProductConfirm(true);
+    console.log(formBody);
 
     // storeProduct(data);
   };
@@ -71,6 +106,8 @@ const Create = () => {
     categories: [] as Category[],
     tags: [] as Tag[],
   });
+
+  const [preShowProductInfo, setPreShowProductInfo] = useState<Product>();
 
   const {
     mutate: fetchMedia,
@@ -89,6 +126,7 @@ const Create = () => {
         });
       }
     });
+    fetchMedia();
   }, []);
 
   const { onOpenModal, isModalOpen, modalProps } = useModalStore();
@@ -101,14 +139,23 @@ const Create = () => {
       })
       .catch(() => toast.error(DELETE_FAILED_MSG));
 
+  const [shouldShowProductConfirm, setShouldShowProductConfirm] =
+    useState(false);
   const onChangeCategory = (categoryId: string) => {
     fetchCategoryAttributes(categoryId).then((data) => {
       setFetchedData({ ...fetchedData, attributes: data });
     });
   };
+
   return (
     <>
       <UploadModal onUploadedFiles={() => fetchMedia()} />
+      {shouldShowProductConfirm && preShowProductInfo && (
+        <PreShowProduct
+          product={preShowProductInfo}
+          onClose={() => setShouldShowProductConfirm(false)}
+        />
+      )}
       {isModalOpen && <DeleteModal onSubmit={onDeleteMedia} />}
       <form
         method="POST"
@@ -127,7 +174,13 @@ const Create = () => {
                   onChangeCategory(
                     Array.isArray(item) ? item[0].value : item?.value || ""
                   );
-                  setMultiSelect({ ...multiSelect, attributes: item });
+                  setMultiSelect({
+                    ...multiSelect,
+                    attributes: item,
+                    categoryId: Array.isArray(item)
+                      ? Number(item[0].value)
+                      : Number(item?.value),
+                  });
                   reset();
                 }}
                 value={multiSelect.attributes}
@@ -157,17 +210,12 @@ const Create = () => {
             </div>
             {/* COUNT Input */}
             <div className="flex flex-col w-1/12">
-              <label
-                htmlFor="count"
-                className="block text-sm font-medium text-gray-900"
-              >
+              <label className="block text-sm font-medium text-gray-900">
                 {PRODUCT_COUNT_LABEL}
               </label>
               <input
-                id="count"
                 {...register("count")}
                 className="styled-input"
-                name="count"
                 type="number"
                 min={0}
                 placeholder="0"
@@ -175,17 +223,12 @@ const Create = () => {
             </div>
             {/* PRICE Input */}
             <div className="flex flex-col w-1/5">
-              <label
-                htmlFor="count"
-                className="block text-sm font-medium text-gray-900"
-              >
+              <label className="block text-sm font-medium text-gray-900">
                 {PRODUCT_PRICE_LABEL}
               </label>
               <input
-                id="count"
                 className="styled-input"
                 {...register("price")}
-                name="price"
                 type="number"
                 min={0}
               />
@@ -196,13 +239,13 @@ const Create = () => {
                 تگ ها
               </label>
               <Select
-                onChange={(value) =>
-                  setMultiSelect({ ...multiSelect, tags: value })
+                onChange={(item) =>
+                  setMultiSelect({ ...multiSelect, tags: item })
                 }
                 value={multiSelect.tags}
                 options={fetchedData.tags.map((tag) => ({
+                  value: String(tag.id),
                   label: tag.title,
-                  value: tag.title,
                 }))}
                 primaryColor={"indigo"}
                 isSearchable={true}
@@ -224,7 +267,7 @@ const Create = () => {
               <label className="block text-sm/6 font-medium text-gray-900 mt-3">
                 ویژگی ها
               </label>
-              <Table columns={["ردیف", "نام", "مقدار"]}>
+              <Table columns={["نام", "مقدار"]}>
                 {fetchedData.attributes.length > 0 ? (
                   fetchedData.attributes.map((attr, index) => (
                     <tr
@@ -233,18 +276,13 @@ const Create = () => {
                         index % 2 === 0 ? "bg-gray-50" : "bg-white"
                       } hover:bg-gray-100 transition-colors duration-200`}
                     >
-                      <td className="text-right py-4 px-6 border-l border-gray-200 font-medium text-gray-800">
-                        {index + 1}
-                      </td>
                       <td className="text-right py-4 px-6 border-l border-gray-200 text-gray-700">
-                        {attr.id}
+                        {attr.title}
                       </td>
                       <td className="text-right py-4 px-6 border-l border-gray-200 text-gray-700">
                         <input
                           key={attr.id}
-                          {...register(
-                            `attribute_values.${index}.value` as const
-                          )}
+                          {...register(`attributes.${index}.value` as const)}
                           placeholder="مقدار را با هر نوع اطلاعات بیشتر پر کنید"
                           className="styled-input"
                         />
@@ -318,12 +356,15 @@ const Create = () => {
                           >
                             حذف
                           </button>
-                          <button
-                            type="button"
-                            className="bg-blue-500 text-white py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
-                          >
-                            پس زمینه
-                          </button>
+                          {index !== 0 && (
+                            <button
+                              type="button"
+                              className="bg-blue-500 text-white py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
+                              onClick={() => {} }
+                            >
+                              پس زمینه
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -340,6 +381,13 @@ const Create = () => {
                 )}
               </Table>
             </div>
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label className="block text-sm font-medium text-gray-900">
+              عنوان محصول
+            </label>
+            <input {...register("title")} className="styled-input" />
           </div>
 
           <div className="flex flex-row gap-4">

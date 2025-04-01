@@ -3,17 +3,17 @@ import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import ApiClient from "../../../services/apiClient";
 import { toast } from "react-toastify";
-import { Products } from "../../../types/admin";
+import { Product } from "../../../types/admin";
 import { generateUrl } from "../../../services/general";
 import { PRODUCT_DETAILS_API } from "../../../types/url";
 
 export default function Index() {
   const apiCall = new ApiClient("products/index");
-  const [products, setProducts] = useState([] as Products[]);
+  const [products, setProducts] = useState([] as Product[]);
 
   const getProducts = useMutation({
     mutationFn: () => {
-      return apiCall.getRequest<Products[]>();
+      return apiCall.getRequest<Product[]>();
     },
     onSuccess: (response) => {
       setProducts(response);

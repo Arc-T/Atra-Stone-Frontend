@@ -34,7 +34,6 @@ export const MEDIA_DELETE_API = "media/delete";
 export const MEDIA_TEMP_LIST_API = "media/list-tmp";
 export const MEDIA_TEMP_DELETE_API = "media/{mediaName}/delete-tmp";
 
-/* ************************* MEDIA URL  ************************* */
 export const MEDIA_SHOW_URL = `${BASE_URL}media/products/tmp/`;
 
 /* ************************* ATTRIBUTES  ************************* */

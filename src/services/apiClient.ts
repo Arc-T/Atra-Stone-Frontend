@@ -30,11 +30,11 @@ axiosInstance.interceptors.request.use((config) => {
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
-  console.log(config.headers);
-  console.log(config.baseURL);
-  console.log(config.url);
-  console.log(config.auth);
-  console.log(config.data);
+  // console.log(config.headers);
+  // console.log(config.baseURL);
+  // console.log(config.url);
+  // console.log(config.auth);
+  // console.log(config.data);
   return config;
 });
 
