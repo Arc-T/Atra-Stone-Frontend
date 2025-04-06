@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import {
   deleteTempMedia,
   getCreateDetails,
+  getUploadedMedia,
   storeProduct,
 } from "../../../services/productService";
 import {
@@ -16,21 +17,24 @@ import {
   MULTISELECT_PLACEHOLDER,
   MULTISELECT_SEARCH_PLACEHOLDER,
 } from "../../../types/messages";
+import { MEDIA_SHOW_URL } from "../../../types/url";
 import UploadModal from "../../../components/UploadModal";
-import { Category, Attribute, Tag, Product } from "../../../types/admin";
+import { Category, Attribute, Tag, Product, Media } from "../../../types/admin";
 import { useFetchMedia } from "../../../hooks/useProducts";
 import { ArrowClockwise } from "react-bootstrap-icons";
-import { MEDIA_SHOW_URL } from "../../../types/url";
 import useModalStore from "../../../contexts/modalStore";
 import { DeleteModal } from "../../../components/DeleteModal";
 import { fetchCategoryAttributes } from "../../../services/attributeService";
-import PreShowProduct from "../../../components/PreShowProduct";
+import PreShowProduct, {
+  ProductProps,
+} from "../../../components/PreShowProduct";
 
 interface FormValues {
   title: string;
   count: number;
   price: number;
   category_id: number;
+  media: Media[];
   tags: number[];
   attributes: { id: number; value: string }[];
   description: string;
@@ -39,19 +43,20 @@ interface FormValues {
 const Create = () => {
   // ******************** FORM ******************** //
 
-  const { register, reset, setValue, formState, handleSubmit } =
-    useForm<FormValues>();
+  const { register, reset, handleSubmit } = useForm<FormValues>();
 
   const [multiSelect, setMultiSelect] = useState({
     attributes: null as SelectValue,
-    tags: null as SelectValue,
     categoryId: 0,
+    tags: null as SelectValue,
   });
 
   const onSubmit: SubmitHandler<FormValues> = (formBody) => {
     formBody.tags = Array.isArray(multiSelect.tags)
       ? multiSelect.tags.map((item) => Number(item.value))
       : [];
+
+    if (fetchedData.medias) formBody.media = fetchedData.medias;
 
     formBody.attributes = formBody.attributes
       .map((attr, index) => ({
@@ -86,13 +91,10 @@ const Create = () => {
         .join(" ");
 
     setPreShowProductInfo({
-      id: 0,
-      name: "",
-      media: medias,
-      count: formBody.count,
+      media: fetchedData.medias?.find((item) => item.order === 1) || null,
       title: title,
+      count: formBody.count,
       price: formBody.price,
-      created_at: "",
     });
 
     setShouldShowProductConfirm(true);
@@ -100,33 +102,41 @@ const Create = () => {
 
     // storeProduct(data);
   };
+
   // ******************** MOUNT ******************** //
   const [fetchedData, setFetchedData] = useState({
     attributes: [] as Attribute[],
     categories: [] as Category[],
+    medias: [] as Media[],
     tags: [] as Tag[],
   });
 
-  const [preShowProductInfo, setPreShowProductInfo] = useState<Product>();
+  const [preShowProductInfo, setPreShowProductInfo] = useState<ProductProps>();
 
-  const {
-    mutate: fetchMedia,
-    data: medias,
-    isPending,
-    error: mediaFetchError,
-  } = useFetchMedia();
+  // const {
+  //   mutate: fetchMedia,
+  //   data: fetchedData.medias,
+  //   isPending,
+  //   error: mediaFetchError,
+  // } = useFetchMedia();
+  const fetchMedia = () => {
+    getUploadedMedia().then((data) =>
+      setFetchedData((prevData) => ({ ...prevData, medias: data }))
+    );
+  };
 
   useEffect(() => {
+    fetchMedia();
+
     getCreateDetails().then((data) => {
       if (data) {
-        setFetchedData({
-          ...fetchedData,
+        setFetchedData((prevData) => ({
+          ...prevData,
           categories: data.categories,
           tags: data.tags,
-        });
+        }));
       }
     });
-    fetchMedia();
   }, []);
 
   const { onOpenModal, isModalOpen, modalProps } = useModalStore();
@@ -313,62 +323,70 @@ const Create = () => {
                   <ArrowClockwise />
                 </button>
               </label>
-              <Table
-                columns={["نوع فایل", "حجم", "تاریخ آپلود", "عملیات"]}
-                error={mediaFetchError}
-                loading={isPending}
-              >
-                {Array.isArray(medias) && medias.length > 0 ? (
-                  medias.map((media, index) => (
-                    <tr
-                      key={index}
-                      className={`border-b ${
-                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                      } hover:bg-gray-100 transition-colors duration-200`}
-                    >
-                      <td className="styled-table-cell">{media.extension}</td>
-                      <td className="styled-table-cell">
-                        {Number(media.size) / (1024 * 1024) > 1
-                          ? (Number(media.size) / (1024 * 1024)).toFixed(2) +
-                            "Mb"
-                          : (Number(media.size) / 1024).toFixed(2) + "Kb"}
-                      </td>
-                      <td className="styled-table-cell">{media.uploaded_at}</td>
-                      <td className="styled-table-cell">
-                        <div className="flex justify-center items-center me-2">
-                          <a
-                            target="_blank"
-                            href={`${MEDIA_SHOW_URL}${media.name}`}
-                            className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"
-                          >
-                            نمایش
-                          </a>
-                          <button
-                            onClick={() => {
-                              onOpenModal({
-                                id: media.name,
-                                name: "عکس آپلود شده با فرمت" + media.extension,
-                                title: "فایل",
-                              });
-                            }}
-                            type="button"
-                            className="bg-red-500 text-white py-2 px-5 rounded-lg hover:bg-red-600 shadow-md transition-all duration-150 mx-2"
-                          >
-                            حذف
-                          </button>
-                          {index !== 0 && (
-                            <button
-                              type="button"
-                              className="bg-blue-500 text-white py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
-                              onClick={() => {} }
+              <Table columns={["ردیف", "نوع فایل", "تاریخ آپلود", "عملیات"]}>
+                {Array.isArray(fetchedData.medias) &&
+                fetchedData.medias.length > 0 ? (
+                  fetchedData.medias
+                    // .sort((a, b) => a.order - b.order)
+                    .map((media, index) => (
+                      <tr
+                        key={index}
+                        className={`border-b ${
+                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                        } hover:bg-gray-100 transition-colors duration-200`}
+                      >
+                        <td className="styled-table-cell">{index + 1}</td>
+                        <td className="styled-table-cell">{media.extension}</td>
+                        <td className="styled-table-cell">
+                          {media.uploaded_at}
+                        </td>
+                        <td className="styled-table-cell">
+                          <div className="flex justify-center items-center me-2">
+                            <a
+                              target="_blank"
+                              href={`${MEDIA_SHOW_URL}${media.name}`}
+                              className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"
                             >
-                              پس زمینه
+                              نمایش
+                            </a>
+                            <button
+                              onClick={() => {
+                                onOpenModal({
+                                  id: media.name,
+                                  name:
+                                    "عکس آپلود شده با فرمت" + media.extension,
+                                  title: "فایل",
+                                });
+                              }}
+                              type="button"
+                              className="bg-red-500 text-white py-2 px-5 rounded-lg hover:bg-red-600 shadow-md transition-all duration-150 mx-2"
+                            >
+                              حذف
                             </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                            {media.order !== 1 && (
+                              <button
+                                type="button"
+                                className="bg-blue-500 text-white py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
+                                onClick={() => {
+                                  const updatedMedias = fetchedData.medias.map(
+                                    (item) =>
+                                      item.id === media.id
+                                        ? { ...item, order: 1 }
+                                        : { ...item, order: 0 }
+                                  );
+                                  setFetchedData({
+                                    ...fetchedData,
+                                    medias: updatedMedias,
+                                  });
+                                }}
+                              >
+                                پس زمینه
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
                 ) : (
                   <tr className="border-b bg-gray-50">
                     <td

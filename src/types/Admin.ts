@@ -60,14 +60,6 @@ export interface Service {
   createdAt: string;
 }
 
-export interface ProductMedia {
-  id: number;
-  name: string;
-  isHero: boolean;
-  extension: string;
-  uploadedAt: string;
-}
-
 export interface Category {
   id: number;
   title: string;
@@ -79,8 +71,8 @@ export interface Category {
 }
 
 export interface Media {
+  id: number;
   name: string;
-  size: number;
   order: number;
   extension: string;
   uploaded_at: string;

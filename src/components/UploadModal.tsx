@@ -20,7 +20,6 @@ const UploadModal = ({ onUploadedFiles }: props) => {
 
     const form = new FormData();
     files.forEach((file) => form.append("files", file));
-    form.append("order", JSON.stringify([1, 2, 3, 4]));
 
     uploadMedia(form, (percentage) => {
       setProgress(percentage);
