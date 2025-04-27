@@ -10,14 +10,15 @@ interface FormValues {
 }
 
 export default function Login() {
+
   if (localStorage.getItem("token"))
     return <Navigate to={`/${ADMIN_HOMEPAGE}`} />;
 
   const { state } = useLocation();
 
-  const { mutate: authenticate } = useAuth();
+  const { mutate: authenticateAdmin } = useAuth();
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => authenticate(data);
+  const onSubmit: SubmitHandler<FormValues> = (data) => authenticateAdmin(data);
 
   const { register, handleSubmit } = useForm<FormValues>();
 

@@ -2,7 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import AdminLayout from "./layouts/admin/Rtl.tsx";
 import Home from "./pages/admin/Home";
 import CustomerHome from "./pages/user/Home";
-import Login from "./pages/admin/auth/Login.tsx";
+import AdminLogin from "./pages/admin/auth/Login.tsx";
+import UserLogin from "./pages/user/Auth/Login.tsx";
 import List from "./pages/admin/Products/List.tsx";
 import ProductIndex from "./pages/admin/Products/Index.tsx";
 import CustomerLayout from "./layouts/user/Rtl.tsx";
@@ -15,6 +16,9 @@ import ProductsList from "./pages/user/EconomicProduct/Index.tsx";
 import ProductShow from "./pages/user/EconomicProduct/Show.tsx";
 import AcademyIndex from "./pages/user/Academy/Index.tsx";
 import CustomProductsIndex from "./pages/user/CustomProducts/Index.tsx";
+import TestPaymentPage from "./pages/test/Payment.tsx";
+import PaymentResultPage from "./pages/test/PaymentResult.tsx";
+import Register from "./pages/user/Auth/Register.tsx";
 // import Edit from "./pages/admin/Products/Edit.tsx";
 
 const router = createBrowserRouter([
@@ -63,8 +67,24 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/user/login",
-    element: <Login />,
+    path: "/admin/login",
+    element: <AdminLogin />,
+  },
+  {
+    path: "/user/login/:backUrl?",
+    element: <UserLogin />,
+  },
+  {
+    path: "/user/sign-up/:backUrl?",
+    element: <Register />,
+  },
+  {
+    path: "/payment",
+    element: <TestPaymentPage />,
+  },
+  {
+    path: "/payment/result/",
+    element: <PaymentResultPage />,
   },
   {
     element: <CustomerLayout />,

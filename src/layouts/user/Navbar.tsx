@@ -1,82 +1,69 @@
-import { Book, Box, House, Phone } from "react-bootstrap-icons";
-import logo from "../../assets/images/emerald logo.png";
 import { Link } from "react-router-dom";
+import {
+  House,
+  Box,
+  Book,
+  Phone,
+  PersonFill,
+  CartFill,
+} from "react-bootstrap-icons";
+import { ReactNode } from "react";
+import logo from "../../assets/images/emerald logo.png";
 
-interface props {
+interface HeaderProps {
   theme: string;
 }
 
-// bg-slate-900
+interface NavItemProps {
+  to: string;
+  icon: ReactNode;
+  label: string;
+}
 
-const Navbar = ({ theme }: props) => {
+const NavItem = ({ to, icon, label }: NavItemProps) => (
+  <Link
+    to={to}
+    className="flex items-center gap-1.5 text-gray-300 hover:text-white transition-all duration-200 text-[15px] font-medium"
+  >
+    <span className="text-[20px]">{icon}</span>
+    <span>{label}</span>
+  </Link>
+);
+
+const Header = ({ theme }: HeaderProps) => {
   return (
-    <header className={`${theme} transition-colors opacity-85 shadow-md`}>
-      <div className="max-w-screen-2xl mx-auto px-8">
-        <div className="flex justify-between items-center h-16 my-4">
+    <header className={`${theme} opacity-95 shadow-md transition-colors`}>
+      <div className="max-w-screen-2xl mx-auto px-6 py-2">
+        <div className="grid grid-cols-3 items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <img src={logo} alt="Logo" className="w-auto h-24 object-contain" />
-          </div>
-
-          {/* Navbar Menu */}
-          <nav className="hidden md:flex space-x-reverse space-x-8">
+          <div className="flex items-center gap-3">
+            <img
+              src={logo}
+              alt="Atra Stones Accessory Logo"
+              className="h-16 w-auto object-contain"
+            />
             <Link
               to="/"
-              className="text-gray-300 transition-colors duration-200 flex items-center"
-            >
-              <House className="ml-2" /> {/* House icon for "خانه" */}
-              خانه
-            </Link>
-            <Link
-              to="/gallery"
-              className="text-gray-300 transition-colors duration-200 flex items-center"
-            >
-              <Box className="ml-2" /> {/* Box icon for "محصولات" */}
-              محصولات
-            </Link>
-            <Link
-              to="#"
-              className="text-gray-300 transition-colors duration-200 flex items-center"
-            >
-              <Book className="ml-2" /> {/* Book icon for "آموزش" */}
-              آموزش
-            </Link>
-            <Link
-              to="#"
-              className="text-gray-300 transition-colors duration-200 flex items-center"
-            >
-              <Phone className="ml-2" /> {/* Phone icon for "تماس با ما" */}
-              تماس با ما
-            </Link>
-          </nav>
-
-          <div className="flex-shrink-0 hidden lg:flex">
-            <Link
-              to="/"
-              className="text-5xl font-thin text-white font-[Dynalight]"
+              className="text-[28px] font-light text-white font-[Dynalight] tracking-wide whitespace-nowrap"
             >
               Atra Stones Accessory
             </Link>
           </div>
 
-          {/* Mobile Menu Button (Hidden on Desktop) */}
-          <div className="md:hidden">
-            <button className="text-gray-300 focus:outline-none">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16m-7 6h7"
-                ></path>
-              </svg>
-            </button>
+          {/* Navigation */}
+          <nav className="hidden md:flex justify-center gap-10">
+            <NavItem to="/" icon={<House />} label="خانه" />
+            <NavItem to="/gallery" icon={<Box />} label="محصولات" />
+            <NavItem to="#" icon={<Book />} label="آموزش" />
+            <NavItem to="#" icon={<Phone />} label="تماس با ما" />
+          </nav>
+
+          {/* User Icons */}
+          <div className="hidden lg:flex justify-end items-center gap-5 text-white">
+            <Link to={"/user/login/?backUrl=/"}>
+              <PersonFill className="text-[20px] cursor-pointer hover:text-gray-200 transition-colors" />
+            </Link>
+            <CartFill className="text-[20px] cursor-pointer hover:text-gray-200 transition-colors" />
           </div>
         </div>
       </div>
@@ -84,4 +71,4 @@ const Navbar = ({ theme }: props) => {
   );
 };
 
-export default Navbar;
+export default Header;

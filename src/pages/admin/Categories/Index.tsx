@@ -99,7 +99,7 @@ export default function Index() {
           inputs={{
             attributes: inputs.attributes,
             category: inputs.category,
-            categoryTitle: inputs.categoryTitle,
+            categoryTitle: inputs.categoryTitle ? inputs.categoryTitle : "",
           }}
           onSubmitModal={() => {
             onMount();
@@ -237,19 +237,25 @@ export default function Index() {
                       </td>
                       <td className="text-right py-3 px-4 border-l border-gray-300 text-gray-700">
                         <span
-                          className="inline-flex items-center gap-2 px-4 py-2 m-1 text-sm font-semibold rounded-full
-    bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-colors duration-300 ease-in-out"
+                          className={`inline-flex items-center text-center gap-2 px-4 py-2 m-1 text-sm font-semibold rounded-full border transition-colors duration-300 ease-in-out
+                            ${
+                              category.title_sequence
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
+                                : "bg-red-50 text-red-800 border-red-300 hover:bg-red-100"
+                            }`}
                         >
-                          {category.title_sequence &&
-                            category.title_sequence
-                              .split(",")
-                              .map((id) =>
-                                fetchedData.attributes.find(
-                                  (attr) => String(attr.id) === id.trim()
-                                )
-                              )
-                              .map((attribute) => attribute?.title)
-                              .join(" + ")}
+                          {category.title_sequence
+                            ? category.title_sequence
+                                .split(",")
+                                .map((id) => {
+                                  const matched = fetchedData.attributes.find(
+                                    (attr) => String(attr.id) === id.trim()
+                                  );
+                                  return matched?.title || null;
+                                })
+                                .filter(Boolean)
+                                .join(" + ")
+                            : "هیچ ترتیبی اعمال نشده !"}
                         </span>
                       </td>
                       <td className="text-right py-3 px-4 border-l border-gray-300 text-gray-700">
@@ -270,20 +276,31 @@ export default function Index() {
                         </button>
                         <button
                           onClick={() => {
+                            const titleParts = category?.title_sequence
+                              ? fetchedData.attributes
+                                  .filter((attr) =>
+                                    category.title_sequence
+                                      ?.split(",")
+                                      .some(
+                                        (id) => id.trim() === String(attr.id)
+                                      )
+                                  )
+                                  .map((attribute) => attribute.title)
+                              : [];
+
                             setInputs({
-                              categoryTitle: fetchedData.attributes
-                                .filter((attr) =>
-                                  category.title_sequence
-                                    .split(",")
-                                    .some((id) => id.trim() === String(attr.id))
-                                )
-                                .map((attribute) => attribute.title)
-                                .join(" + "),
+                              categoryTitle:
+                                titleParts.length > 0
+                                  ? titleParts.join(" + ")
+                                  : "",
                               category: category,
                               attributes: fetchedData.attributes.filter(
                                 (item) => item.category_id === category.id
                               ),
                             });
+
+                            setEditModalOpen(true);
+
                             setEditModalOpen(true);
                           }}
                           className="bg-emerald-500 text-white text-sm mx-2 my-1 px-3 py-2 rounded-md hover:bg-emerald-600 focus:ring focus:ring-blue-200"

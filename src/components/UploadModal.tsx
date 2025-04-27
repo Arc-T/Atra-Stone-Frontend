@@ -1,15 +1,14 @@
 import { FormEvent, useState } from "react";
 import FileDropzone from "./Dropzone";
-import { Image } from "react-bootstrap-icons";
 import { uploadMedia } from "../services/productService";
 import { SYNCING_MSG, UPLOADING_MSG } from "../types/messages";
 
 interface props {
   onUploadedFiles: () => void;
+  onClose: () => void;
 }
 
-const UploadModal = ({ onUploadedFiles }: props) => {
-  const [isOpen, setIsOpen] = useState(false);
+const UploadModal = ({ onUploadedFiles, onClose }: props) => {
   const [progress, setProgress] = useState(0);
   const [files, setFiles] = useState([] as File[]);
 
@@ -23,7 +22,7 @@ const UploadModal = ({ onUploadedFiles }: props) => {
 
     uploadMedia(form, (percentage) => {
       setProgress(percentage);
-      if (percentage === 100) setIsOpen(false);
+      return onClose();
     }).then(() => {
       onUploadedFiles();
       setProgress(0);
@@ -51,63 +50,52 @@ const UploadModal = ({ onUploadedFiles }: props) => {
           </div>
         </div>
       )}
-
-      <button
-        onClick={() => setIsOpen(true)}
-        className="flex flex-col justify-center items-center bg-blue-500 text-white px-5 py-4 rounded-full hover:bg-blue-600 shadow-md transition-all duration-150 fixed left-4 bottom-4"
-      >
-        <Image className="text-2xl font-bold" />
-        <p>تصاویر</p>
-      </button>
-      {isOpen && (
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
+        <div
+          className="relative z-10"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* <!-- Background overlay --> */}
           <div
-            className="relative z-10"
-            aria-labelledby="modal-title"
-            role="dialog"
-            aria-modal="true"
-          >
-            {/* <!-- Background overlay --> */}
-            <div
-              className="fixed inset-0 bg-gray-800 bg-opacity-50 transition-opacity"
-              aria-hidden="true"
-            ></div>
+            className="fixed inset-0 bg-gray-800 bg-opacity-50 transition-opacity"
+            aria-hidden="true"
+          ></div>
 
-            {/* <!-- Modal container --> */}
-            <div className="fixed inset-0 z-30 flex items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
-              <div className="w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all">
-                {/* <!-- Modal content --> */}
-                <div className="bg-white px-6 py-5 sm:px-8 max-h-[80vh] overflow-y-auto">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mt-3 text-center sm:text-left w-full">
-                      {/* <!-- Replace this FileDropzone with actual component rendering --> */}
-                      <FileDropzone onFilesChange={onFileUpload} />
-                    </div>
+          <div className="fixed inset-0 z-30 flex items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
+            <div className="w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all">
+              {/* <!-- Modal content --> */}
+              <div className="bg-white px-6 py-5 sm:px-8 max-h-[80vh] overflow-y-auto">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:text-left w-full">
+                    {/* <!-- Replace this FileDropzone with actual component rendering --> */}
+                    <FileDropzone onFilesChange={onFileUpload} />
                   </div>
                 </div>
+              </div>
 
-                {/* <!-- Actions --> */}
-                <div className="bg-gray-100 border-t px-8 py-4 flex justify-end space-x-reverse space-x-2">
-                  <button
-                    type="button"
-                    className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300 transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    بازگشت
-                  </button>
+              {/* <!-- Actions --> */}
+              <div className="bg-gray-100 border-t px-8 py-4 flex justify-end space-x-reverse space-x-2">
+                <button
+                  type="button"
+                  className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-300 transition-colors"
+                  onClick={onClose}
+                >
+                  بازگشت
+                </button>
 
-                  <button
-                    type="submit"
-                    className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-500 transition-colors"
-                  >
-                    آپلود
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-500 transition-colors"
+                >
+                  آپلود
+                </button>
               </div>
             </div>
           </div>
-        </form>
-      )}
+        </div>
+      </form>
     </>
   );
 };

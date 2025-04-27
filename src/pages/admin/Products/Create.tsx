@@ -19,15 +19,16 @@ import {
 } from "../../../types/messages";
 import { MEDIA_SHOW_URL } from "../../../types/url";
 import UploadModal from "../../../components/UploadModal";
-import { Category, Attribute, Tag, Product, Media } from "../../../types/admin";
-import { useFetchMedia } from "../../../hooks/useProducts";
-import { ArrowClockwise } from "react-bootstrap-icons";
+import { Category, Attribute, Tag, Media } from "../../../types/admin";
+import { ArrowClockwise, Plus } from "react-bootstrap-icons";
 import useModalStore from "../../../contexts/modalStore";
 import { DeleteModal } from "../../../components/DeleteModal";
 import { fetchCategoryAttributes } from "../../../services/attributeService";
 import PreShowProduct, {
   ProductProps,
 } from "../../../components/PreShowProduct";
+import { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface FormValues {
   title: string;
@@ -35,14 +36,14 @@ interface FormValues {
   price: number;
   category_id: number;
   media: Media[];
-  tags: number[];
+  // tags: number[];
   attributes: { id: number; value: string }[];
   description: string;
 }
 
 const Create = () => {
   // ******************** FORM ******************** //
-
+  const queryClient = useQueryClient();
   const { register, reset, handleSubmit } = useForm<FormValues>();
 
   const [multiSelect, setMultiSelect] = useState({
@@ -51,11 +52,7 @@ const Create = () => {
     tags: null as SelectValue,
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (formBody) => {
-    formBody.tags = Array.isArray(multiSelect.tags)
-      ? multiSelect.tags.map((item) => Number(item.value))
-      : [];
-
+  const processFormData = (formBody: FormValues) => {
     if (fetchedData.medias) formBody.media = fetchedData.medias;
 
     formBody.attributes = formBody.attributes
@@ -69,7 +66,7 @@ const Create = () => {
       (item) => item.id === multiSelect.categoryId
     );
 
-    const title =
+    formBody.title =
       category?.title +
       " " +
       category?.title_sequence
@@ -79,7 +76,6 @@ const Create = () => {
             (attr) => attr.id === Number(id.trim())
           );
           const value = attribute?.value;
-
           return value && value.trim() !== ""
             ? value
             : `[${
@@ -90,17 +86,32 @@ const Create = () => {
         })
         .join(" ");
 
+    return formBody;
+  };
+
+  // This one for preshow
+  const onPreShow: SubmitHandler<FormValues> = (formBody) => {
+    const processedData = processFormData({ ...formBody });
+
     setPreShowProductInfo({
       media: fetchedData.medias?.find((item) => item.order === 1) || null,
-      title: title,
-      count: formBody.count,
-      price: formBody.price,
+      title: processedData.title,
+      count: processedData.count,
+      price: processedData.price,
     });
 
     setShouldShowProductConfirm(true);
-    console.log(formBody);
+  };
 
-    // storeProduct(data);
+  const onSubmit: SubmitHandler<FormValues> = (formBody) => {
+    // To remove "products" from cache:
+    queryClient.removeQueries({ queryKey: ["products"] });
+    const processedData = processFormData({ ...formBody });
+    storeProduct(processedData)
+      .then(() => toast.success("محصول با موفقیت ثبت شد"))
+      .catch((error: AxiosError) =>
+        toast.error("خطا در انجام عملیات: " + error.message)
+      );
   };
 
   // ******************** MOUNT ******************** //
@@ -111,23 +122,29 @@ const Create = () => {
     tags: [] as Tag[],
   });
 
+  const [shouldShowProductConfirm, setShouldShowProductConfirm] =
+    useState(false);
+
   const [preShowProductInfo, setPreShowProductInfo] = useState<ProductProps>();
 
-  // const {
-  //   mutate: fetchMedia,
-  //   data: fetchedData.medias,
-  //   isPending,
-  //   error: mediaFetchError,
-  // } = useFetchMedia();
   const fetchMedia = () => {
-    getUploadedMedia().then((data) =>
-      setFetchedData((prevData) => ({ ...prevData, medias: data }))
-    );
+    getUploadedMedia().then((data) => {
+      const newMedias = data.map((media, index) => ({
+        id: index,
+        name: media.name,
+        extension: media.extension,
+        order: index === 0 ? 1 : 0,
+        uploaded_at: media.uploaded_at,
+      }));
+      setFetchedData((prevFetchedData) => ({
+        ...prevFetchedData,
+        medias: newMedias,
+      }));
+    });
   };
 
   useEffect(() => {
     fetchMedia();
-
     getCreateDetails().then((data) => {
       if (data) {
         setFetchedData((prevData) => ({
@@ -149,17 +166,22 @@ const Create = () => {
       })
       .catch(() => toast.error(DELETE_FAILED_MSG));
 
-  const [shouldShowProductConfirm, setShouldShowProductConfirm] =
-    useState(false);
   const onChangeCategory = (categoryId: string) => {
     fetchCategoryAttributes(categoryId).then((data) => {
       setFetchedData({ ...fetchedData, attributes: data });
     });
   };
 
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
   return (
     <>
-      <UploadModal onUploadedFiles={() => fetchMedia()} />
+      {showUploadModal && (
+        <UploadModal
+          onUploadedFiles={() => fetchMedia()}
+          onClose={() => setShowUploadModal(false)}
+        />
+      )}
       {shouldShowProductConfirm && preShowProductInfo && (
         <PreShowProduct
           product={preShowProductInfo}
@@ -273,8 +295,9 @@ const Create = () => {
           </div>
 
           <div className="flex flex-row gap-4">
-            <div className="flex flex-col w-1/3">
-              <label className="block text-sm/6 font-medium text-gray-900 mt-3">
+            {/* ویژگی ها */}
+            <div className="flex-col w-1/3 mt-5">
+              <label className="block text-md font-medium text-gray-900 mb-1">
                 ویژگی ها
               </label>
               <Table columns={["نام", "مقدار"]}>
@@ -286,14 +309,14 @@ const Create = () => {
                         index % 2 === 0 ? "bg-gray-50" : "bg-white"
                       } hover:bg-gray-100 transition-colors duration-200`}
                     >
-                      <td className="text-right py-4 px-6 border-l border-gray-200 text-gray-700">
+                      <td className="py-3 px-4 text-gray-700 border-l border-gray-200">
                         {attr.title}
                       </td>
-                      <td className="text-right py-4 px-6 border-l border-gray-200 text-gray-700">
+                      <td className="py-3 px-4 text-gray-700">
                         <input
                           key={attr.id}
                           {...register(`attributes.${index}.value` as const)}
-                          placeholder="مقدار را با هر نوع اطلاعات بیشتر پر کنید"
+                          placeholder="مقدار را پر کنید"
                           className="styled-input"
                         />
                       </td>
@@ -302,98 +325,106 @@ const Create = () => {
                 ) : (
                   <tr className="border-b bg-gray-50">
                     <td
-                      colSpan={6}
-                      className="text-center py-4 px-6 text-gray-500"
+                      colSpan={2}
+                      className="text-center py-4 px-4 text-gray-500"
                     >
-                      هیچ دسته بندی انتخاب نشده !
+                      هیچ دسته بندی انتخاب نشده!
                     </td>
                   </tr>
                 )}
               </Table>
             </div>
 
-            <div className="flex flex-col w-3/4">
-              <label className="block text-sm/6 font-medium text-gray-900">
-                عکس های آپلود شده
-                <button
-                  type="button"
-                  onClick={() => fetchMedia()}
-                  className="bg-red-500 text-white py-2 px-2 rounded-full hover:bg-red-600 shadow-md transition-all duration-150 mx-2 mb-1"
-                >
-                  <ArrowClockwise />
-                </button>
-              </label>
+            {/* مدیا */}
+            <div className="flex-col w-2/3">
+              <div className="flex justify-between items-end mb-2">
+                <label className="block text-md font-medium text-gray-900">
+                  عکس‌های آپلود شده
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fetchMedia()}
+                    className="flex items-center gap-1 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 shadow-md transition-all duration-150"
+                  >
+                    بروزرسانی
+                    <ArrowClockwise />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadModal(true)}
+                    className="flex items-center gap-1 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
+                  >
+                    اضافه کردن
+                    <Plus />
+                  </button>
+                </div>
+              </div>
+
               <Table columns={["ردیف", "نوع فایل", "تاریخ آپلود", "عملیات"]}>
                 {Array.isArray(fetchedData.medias) &&
                 fetchedData.medias.length > 0 ? (
-                  fetchedData.medias
-                    // .sort((a, b) => a.order - b.order)
-                    .map((media, index) => (
-                      <tr
-                        key={index}
-                        className={`border-b ${
-                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                        } hover:bg-gray-100 transition-colors duration-200`}
-                      >
-                        <td className="styled-table-cell">{index + 1}</td>
-                        <td className="styled-table-cell">{media.extension}</td>
-                        <td className="styled-table-cell">
-                          {media.uploaded_at}
-                        </td>
-                        <td className="styled-table-cell">
-                          <div className="flex justify-center items-center me-2">
-                            <a
-                              target="_blank"
-                              href={`${MEDIA_SHOW_URL}${media.name}`}
-                              className="bg-green-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"
-                            >
-                              نمایش
-                            </a>
+                  fetchedData.medias.map((media, index) => (
+                    <tr
+                      key={index}
+                      className={`border-b ${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      } hover:bg-gray-100 transition-colors duration-200`}
+                    >
+                      <td className="py-3 px-4">{index + 1}</td>
+                      <td className="py-3 px-4">{media.extension}</td>
+                      <td className="py-3 px-4">{media.uploaded_at}</td>
+                      <td className="py-3 px-4">
+                        <div className="flex flex-wrap justify-center gap-2">
+                          <a
+                            href={`${MEDIA_SHOW_URL}${media.name}`}
+                            target="_blank"
+                            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"
+                          >
+                            نمایش
+                          </a>
+                          <button
+                            onClick={() =>
+                              onOpenModal({
+                                id: media.name,
+                                name: `عکس آپلود شده با فرمت ${media.extension}`,
+                                title: "فایل",
+                              })
+                            }
+                            className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 shadow-md transition-all duration-150"
+                          >
+                            حذف
+                          </button>
+                          {media.order !== 1 && (
                             <button
                               onClick={() => {
-                                onOpenModal({
-                                  id: media.name,
-                                  name:
-                                    "عکس آپلود شده با فرمت" + media.extension,
-                                  title: "فایل",
+                                const updatedMedias = fetchedData.medias.map(
+                                  (item) =>
+                                    item.id === media.id
+                                      ? { ...item, order: 1 }
+                                      : { ...item, order: 0 }
+                                );
+                                setFetchedData({
+                                  ...fetchedData,
+                                  medias: updatedMedias,
                                 });
                               }}
-                              type="button"
-                              className="bg-red-500 text-white py-2 px-5 rounded-lg hover:bg-red-600 shadow-md transition-all duration-150 mx-2"
+                              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
                             >
-                              حذف
+                              پس زمینه
                             </button>
-                            {media.order !== 1 && (
-                              <button
-                                type="button"
-                                className="bg-blue-500 text-white py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
-                                onClick={() => {
-                                  const updatedMedias = fetchedData.medias.map(
-                                    (item) =>
-                                      item.id === media.id
-                                        ? { ...item, order: 1 }
-                                        : { ...item, order: 0 }
-                                  );
-                                  setFetchedData({
-                                    ...fetchedData,
-                                    medias: updatedMedias,
-                                  });
-                                }}
-                              >
-                                پس زمینه
-                              </button>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 ) : (
                   <tr className="border-b bg-gray-50">
                     <td
                       colSpan={4}
-                      className="text-center py-4 px-6 text-gray-500"
+                      className="text-center py-4 px-4 text-gray-500"
                     >
-                      هیچ عکسی ذخیره نشده !{" "}
+                      هیچ عکسی ذخیره نشده!
                     </td>
                   </tr>
                 )}
@@ -401,26 +432,29 @@ const Create = () => {
             </div>
           </div>
 
-          <div className="flex flex-col w-full">
-            <label className="block text-sm font-medium text-gray-900">
-              عنوان محصول
+          {/* توضیحات */}
+          <div className="flex flex-col">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              توضیحات
             </label>
-            <input {...register("title")} className="styled-input" />
+            <textarea
+              {...register("description")}
+              rows={3}
+              className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm text-gray-700 placeholder-gray-400"
+            ></textarea>
           </div>
 
-          <div className="flex flex-row gap-4">
-            <div className="flex flex-col w-full">
-              <label className="block text-sm font-medium text-gray-900">
-                توضیحات
-              </label>
-              <textarea
-                {...register("description")}
-                rows={3}
-                className="styled-input"
-              ></textarea>
-            </div>
-          </div>
-          <div className="flex flex-col w-1/6">
+          <div className="flex flex-row gap-2">
+            {/* Preview Button */}
+            <button
+              type="button" // <--- important! prevent form submit
+              onClick={handleSubmit(onPreShow)}
+              className="bg-gray-500 text-white py-2 px-5 rounded-lg hover:bg-gray-600 shadow-md transition-all duration-150"
+            >
+              پیش نمایش
+            </button>
+
+            {/* Submit Button */}
             <button
               type="submit"
               className="bg-green-500 text-white py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150"

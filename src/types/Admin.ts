@@ -67,7 +67,7 @@ export interface Category {
   parent_id?: number;
   categories?: Category[];
   description: string;
-  title_sequence: string;
+  title_sequence?: string;
 }
 
 export interface Media {

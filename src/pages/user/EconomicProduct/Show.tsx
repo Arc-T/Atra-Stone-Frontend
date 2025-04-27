@@ -90,7 +90,7 @@ export default function Show() {
   const {
     mutate: showProductInfo,
     data: product,
-    isPending,
+    // isPending,
   } = useShowProduct();
 
   useEffect(() => {

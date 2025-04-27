@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import { PRODUCT_DETAILS_API, PRODUCT_EDIT_PAGE } from "../../../types/url.ts";
 import { generateUrl } from "../../../services/general.ts";
 import Table from "../../../components/Table.tsx";
-import {
-  useDeleteProduct,
-  useFetchProducts,
-} from "../../../hooks/useProducts.ts";
+import { useFetchProducts } from "../../../hooks/useProducts.ts";
 import useModalStore from "../../../contexts/modalStore.tsx";
 import { DeleteModal } from "../../../components/DeleteModal.tsx";
+import { deleteProductById } from "../../../services/productService.ts";
+import { toast } from "react-toastify";
+import {
+  DELETE_FAILED_MSG,
+  DELETE_SUCCESS_MSG,
+} from "../../../types/messages.ts";
+import { AxiosError } from "axios";
 
 const List = () => {
   const tableColumns = [
@@ -20,15 +24,28 @@ const List = () => {
   ];
 
   const { onOpenModal, isModalOpen, modalProps } = useModalStore();
-  const { data: products, isLoading, error: axiosError } = useFetchProducts();
-  const deleteProductMutation = useDeleteProduct();
+  const {
+    data: products,
+    isLoading,
+    error: axiosError,
+    refetch: fetchProducts,
+  } = useFetchProducts();
+
+  const onDeleteProduct = (id: number) => {
+    deleteProductById(id)
+      .then(() => {
+        fetchProducts();
+        toast.success(DELETE_SUCCESS_MSG);
+      })
+      .catch((error: AxiosError) =>
+        toast.error(DELETE_FAILED_MSG + error.message)
+      );
+  };
 
   return (
     <>
       {isModalOpen && (
-        <DeleteModal
-          onSubmit={() => deleteProductMutation.mutate(Number(modalProps.id))}
-        />
+        <DeleteModal onSubmit={() => onDeleteProduct(Number(modalProps.id))} />
       )}
       <Table columns={tableColumns} error={axiosError} loading={isLoading}>
         {Array.isArray(products) && products.length > 0 ? (
@@ -47,10 +64,10 @@ const List = () => {
                   className="w-12 h-12 rounded-full ml-2"
                   src={generateUrl(PRODUCT_DETAILS_API, {
                     productId: product.id,
-                    productName: product.product_media
-                      ? product.product_media.find((item) => item.order === 1)
-                          ?.name ?? "Default Name"
-                      : "Default Name",
+                    productName: product.media
+                      ? product.media.find((item) => item.order === 1)?.name ??
+                        "Default Name"
+                      : "Didn't find",
                   })}
                 />
                 {product.title}
@@ -59,7 +76,7 @@ const List = () => {
                 {Number(product.price).toLocaleString()} تومان
               </td>
               <td className="styled-table-cell">{product.count} عدد</td>
-              <td className="styled-table-cell">{product.createdAt}</td>
+              <td className="styled-table-cell">{product.created_at}</td>
               <td className="py-4 px-6">
                 <div className="flex justify-center items-center ms-2">
                   <Link

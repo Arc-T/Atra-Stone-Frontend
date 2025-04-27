@@ -1,9 +1,7 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Category, Tag } from "../../../types/admin";
 import { toast } from "react-toastify";
 import ApiClient from "../../../services/apiClient";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 // import { Modal } from "../../../components/DeleteModal";
 
 interface TagOption {
@@ -29,7 +27,7 @@ export default function Index() {
   });
 
   // const [isModalOpen, setIsModalOpen] = useState(false);
-  const [action, setAction] = useState("");
+  // const [action, setAction] = useState("");
 
   useEffect(() => {
     apiCall
@@ -40,52 +38,52 @@ export default function Index() {
       .catch(() => toast.error("در دریافت اطلاعات خطایی رخ داده است !"));
   }, []);
 
-  const categoryStore = useMutation({
-    mutationFn: (title: string) => {
-      apiCall.setEndpoint("tags/store");
-      return apiCall.postRequest<number>({ title });
-    },
-    onSuccess: (response, requestTitle: string) => {
-      toast.success("تگ با موفقیت ثبت شد !", {
-        bodyClassName: "text-lg font-black",
-      });
-      setTagState({
-        ...tagState,
-        fetchedCategories: [
-          ...tagState.fetchedCategories,
-          { id: response, title: requestTitle },
-        ],
-        newTag: null,
-      });
-    },
-    onError: (error: AxiosError) => {
-      toast.error("در عملیات ثبت، خطایی رخ داده است !" + error.code);
-    },
-  });
+  // const categoryStore = useMutation({
+  //   mutationFn: (title: string) => {
+  //     apiCall.setEndpoint("tags/store");
+  //     return apiCall.postRequest<number>({ title });
+  //   },
+  //   onSuccess: (response, requestTitle: string) => {
+  //     toast.success("تگ با موفقیت ثبت شد !", {
+  //       bodyClassName: "text-lg font-black",
+  //     });
+  //     setTagState({
+  //       ...tagState,
+  //       fetchedCategories: [
+  //         ...tagState.fetchedCategories,
+  //         { id: response, title: requestTitle },
+  //       ],
+  //       newTag: null,
+  //     });
+  //   },
+  //   onError: (error: AxiosError) => {
+  //     toast.error("در عملیات ثبت، خطایی رخ داده است !" + error.code);
+  //   },
+  // });
 
-  const categoryUpdate = useMutation({
-    mutationFn: ({ id, title }: Category) => {
-      apiCall.setEndpoint(`tags/${id}/update`);
-      return apiCall.putRequest({ title });
-    },
-    onSuccess: (_, { id, title }) => {
-      toast.success("عملیات با موفقیت انجام شد !", {
-        bodyClassName: "text-lg font-black",
-      });
-      setTagState((prevState) => ({
-        ...prevState,
-        editingCategories: prevState.editingCategories.filter(
-          (edit) => edit.id !== id
-        ),
-        fetchedCategories: prevState.fetchedCategories.map((category) =>
-          category.id === id ? { ...category, title } : category
-        ),
-      }));
-    },
-    onError: () => {
-      toast.error("در انجام عملیات خطایی رخ داده است !");
-    },
-  });
+  // const categoryUpdate = useMutation({
+  //   mutationFn: ({ id, title }: Category) => {
+  //     apiCall.setEndpoint(`tags/${id}/update`);
+  //     return apiCall.putRequest({ title });
+  //   },
+  //   onSuccess: (_, { id, title }) => {
+  //     toast.success("عملیات با موفقیت انجام شد !", {
+  //       bodyClassName: "text-lg font-black",
+  //     });
+  //     setTagState((prevState) => ({
+  //       ...prevState,
+  //       editingCategories: prevState.editingCategories.filter(
+  //         (edit) => edit.id !== id
+  //       ),
+  //       fetchedCategories: prevState.fetchedCategories.map((category) =>
+  //         category.id === id ? { ...category, title } : category
+  //       ),
+  //     }));
+  //   },
+  //   onError: () => {
+  //     toast.error("در انجام عملیات خطایی رخ داده است !");
+  //   },
+  // });
 
   // const categoryDelete = useMutation({
   //   mutationFn: (id: number) => {
@@ -110,22 +108,22 @@ export default function Index() {
   //   },
   // });
 
-  const onAddFormSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (title.current?.value)
-      if (action === "ADD")
-        categoryStore.mutate(title.current?.value.toString());
-      else if (action === "EDIT") {
-        const submittedCategory =
-          tagState.editingCategories.find((category) => category.isSubmitted) ||
-          null;
-        if (submittedCategory)
-          categoryUpdate.mutate({
-            id: submittedCategory.id,
-            title: title.current?.value,
-          });
-      }
-  };
+  // const onAddFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   if (title.current?.value)
+  //     if (action === "ADD")
+  //       categoryStore.mutate(title.current?.value.toString());
+  //     else if (action === "EDIT") {
+  //       const submittedCategory =
+  //         tagState.editingCategories.find((category) => category.isSubmitted) ||
+  //         null;
+  //       if (submittedCategory)
+  //         categoryUpdate.mutate({
+  //           id: submittedCategory.id,
+  //           title: title.current?.value,
+  //         });
+  //     }
+  // };
 
   return (
     <>
@@ -151,7 +149,7 @@ export default function Index() {
       )} */}
       <div className="bg-white shadow-md rounded-lg py-4 px-4">
         <div className="overflow-x-auto rounded-lg">
-          <form method="POST" onSubmit={onAddFormSubmit}>
+          <form method="POST">
             <table className="min-w-full border-collapse bg-white">
               <thead>
                 <tr className="bg-red-700 text-white text-lg">
@@ -206,7 +204,7 @@ export default function Index() {
                                       },
                                     ],
                                   }));
-                                  setAction("EDIT");
+                                  // setAction("EDIT");
                                 } else {
                                   setTagState((prevState) => ({
                                     ...prevState,
@@ -313,7 +311,7 @@ export default function Index() {
                         <button
                           type="submit"
                           onClick={() => {
-                            setAction("ADD");
+                            // setAction("ADD");
                           }}
                           className="bg-green-500 text-white py-2 px-5 rounded-lg hover:bg-green-600 shadow-md transition-all duration-150 mx-2"
                         >
