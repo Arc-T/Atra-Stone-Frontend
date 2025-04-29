@@ -15,10 +15,12 @@ import Create from "./pages/admin/Products/Create.tsx";
 import ProductsList from "./pages/user/EconomicProduct/Index.tsx";
 import ProductShow from "./pages/user/EconomicProduct/Show.tsx";
 import AcademyIndex from "./pages/user/Academy/Index.tsx";
+import CartIndex from "./pages/user/Cart/Index.tsx";
 import CustomProductsIndex from "./pages/user/CustomProducts/Index.tsx";
 import TestPaymentPage from "./pages/test/Payment.tsx";
 import PaymentResultPage from "./pages/test/PaymentResult.tsx";
 import Register from "./pages/user/Auth/Register.tsx";
+import PromptBuilder from "./pages/user/Cart/hhh.tsx";
 // import Edit from "./pages/admin/Products/Edit.tsx";
 
 const router = createBrowserRouter([
@@ -87,6 +89,10 @@ const router = createBrowserRouter([
     element: <PaymentResultPage />,
   },
   {
+    path: "/prompt",
+    element: <PromptBuilder />,
+  },
+  {
     element: <CustomerLayout />,
     children: [
       {
@@ -108,6 +114,10 @@ const router = createBrowserRouter([
       {
         path: "/academy",
         element: <AcademyIndex />,
+      },
+      {
+        path: "/checkout/cart/",
+        element: <CartIndex />,
       },
     ],
   },

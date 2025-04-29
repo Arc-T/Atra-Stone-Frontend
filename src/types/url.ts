@@ -30,6 +30,9 @@ export const PRODUCT_DETAILS_API = "media/products/{productId}/{productName}";
 /* ************************* PRODUCT PAGE ************************* */
 export const PRODUCT_EDIT_PAGE = "admin/products/{productId}/edit";
 
+/* ************************* PRODUCT API ************************* */
+export const CART_INDEX_API = "cart/index";
+
 /* ************************* MEDIA API ************************* */
 export const MEDIA_SHOW_API = "media/{productId}/show";
 export const MEDIA_UPLOAD_API = "media/upload";

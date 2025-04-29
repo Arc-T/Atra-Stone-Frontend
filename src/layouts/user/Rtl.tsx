@@ -25,11 +25,7 @@ export default function Rtl() {
       className="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex flex-col"
       // style={{ backgroundImage: `url(${background})` }}
     >
-      <ToastContainer
-        position="top-left"
-        rtl={true}
-        className="custom-toast-container"
-      />
+     <ToastContainer position="top-left" bodyClassName={"toast-body"} rtl={true} />
       <Navbar theme={color} />
       {/* <div className="relative isolate px-6 pt-14 lg:px-8"> */}
       <main className="flex-grow bg-white">

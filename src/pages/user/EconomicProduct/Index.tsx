@@ -102,10 +102,7 @@ export default function Index() {
                   <img
                     src={generateUrl(PRODUCT_DETAILS_API, {
                       productId: product.id,
-                      productName: product.media
-                        ? product.media.find((item) => item.order === 1)
-                            ?.name ?? "Default Name"
-                        : "Default Name",
+                      productName: product.media && product.media[0].name || "No Image"
                     })}
                     className="aspect-square w-full rounded-t-lg bg-gray-100 object-cover group-hover:opacity-80 transition-opacity duration-300 lg:aspect-auto lg:h-80"
                   />

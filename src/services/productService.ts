@@ -1,17 +1,12 @@
 import { ChangeEvent } from "react";
 import ApiClient from "./apiClient";
-import {
-  Category,
-  Media,
-  ProductInfo,
-  Product,
-  Tag,
-} from "../types/admin";
+import { Category, Media, ProductInfo, Product, Tag } from "../types/admin";
 import { generateUrl } from "./general";
 import { toast } from "react-toastify";
 import { UPLOAD_FAILED_MSG, UPLOAD_SUCCESS_MSG } from "../types/messages";
 import { AxiosError } from "axios";
 import {
+  CART_INDEX_API,
   MEDIA_TEMP_DELETE_API,
   MEDIA_TEMP_LIST_API,
   MEDIA_UPLOAD_API,
@@ -36,7 +31,7 @@ export const getProducts = () => {
 
 export const getCreateDetails = () => {
   const axiosInstance = new ApiClient(PRODUCT_CREATE_API);
-  return axiosInstance.getRequest<{ tags: Tag[]; categories: Category[]}>();
+  return axiosInstance.getRequest<{ tags: Tag[]; categories: Category[] }>();
 };
 
 export const deleteProductById = (id: number) => {
@@ -51,6 +46,11 @@ export const showProductInfo = (id: number) => {
     generateUrl(PRODUCT_SHOW_API, { productId: id }, "API")
   );
   return axiosInstance.getRequest<ProductInfo>();
+};
+
+export const getCartProducts = (body: Object) => {
+  const axiosInstance = new ApiClient(CART_INDEX_API);
+  return axiosInstance.postRequest<ProductInfo[]>(body);
 };
 
 export const getUploadedMedia = () => {
@@ -91,7 +91,12 @@ export const deleteTempMedia = (name: string) => {
   return axiosInstance.deleteRequest();
 };
 
-export const storeProduct = (requestBody: Object) => {
+export const storeProduct = (body: Object) => {
   const axiosInstance = new ApiClient(PRODUCT_STORE_API);
-  return axiosInstance.postRequest(requestBody);
+  return axiosInstance.postRequest(body);
+};
+
+export const getCustomProducts = (body: Object) => {
+  const axiosInstance = new ApiClient(PRODUCT_STORE_API);
+  return axiosInstance.postRequest(body);
 };

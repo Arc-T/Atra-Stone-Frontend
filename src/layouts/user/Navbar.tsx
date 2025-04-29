@@ -7,8 +7,9 @@ import {
   PersonFill,
   CartFill,
 } from "react-bootstrap-icons";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import logo from "../../assets/images/emerald logo.png";
+import useCartStore from "../../contexts/cartStore";
 
 interface HeaderProps {
   theme: string;
@@ -31,6 +32,12 @@ const NavItem = ({ to, icon, label }: NavItemProps) => (
 );
 
 const Header = ({ theme }: HeaderProps) => {
+  const { cartIds, loadCart } = useCartStore();
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
   return (
     <header className={`${theme} opacity-95 shadow-md transition-colors`}>
       <div className="max-w-screen-2xl mx-auto px-6 py-2">
@@ -63,7 +70,17 @@ const Header = ({ theme }: HeaderProps) => {
             <Link to={"/user/login/?backUrl=/"}>
               <PersonFill className="text-[20px] cursor-pointer hover:text-gray-200 transition-colors" />
             </Link>
-            <CartFill className="text-[20px] cursor-pointer hover:text-gray-200 transition-colors" />
+            <Link
+              to="/checkout/cart/"
+              className="relative flex items-center gap-2 hover:text-gray-200 transition-colors"
+            >
+              {cartIds.length > 0 && (
+                <span className="absolute -bottom-4 -right-2 bg-red-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow-md">
+                  {cartIds.length}
+                </span>
+              )}
+              <CartFill className="text-[24px]" />
+            </Link>
           </div>
         </div>
       </div>

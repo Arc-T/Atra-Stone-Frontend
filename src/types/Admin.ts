@@ -6,7 +6,7 @@ export interface Product {
   name: string;
   description?: string;
   created_at: string;
-  media?: Media[];
+  media: Media[];
 }
 
 export interface ProductInfo {

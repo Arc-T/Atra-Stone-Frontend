@@ -20,5 +20,6 @@
 ** TODO: eager loading for pages
 ** TODO: table could be better with (is-pending, empty result and <tr> style)
 ** TODO: class name of react multi select has boiler plate styles
+** TODO: useFetchCartProducts for caching cart products should be implemented
 ** TODO: errors such network connection are not handled. login page for example doesn't say network connection error when backend is offline
 _/
