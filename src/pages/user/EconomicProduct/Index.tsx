@@ -123,7 +123,7 @@ export default function Index() {
                         {Number(product.price).toLocaleString()} تومان
                       </p>
                       <p className="mt-1 text-sm text-gray-500">
-                        {product.count} عدد
+                        {product.quantity} عدد
                       </p>
                     </div>
                   </div>

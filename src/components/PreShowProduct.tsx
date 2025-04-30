@@ -4,7 +4,7 @@ import { MEDIA_SHOW_URL } from "../types/url";
 
 export interface ProductProps {
   media: Media | null;
-  count: number;
+  quantity: number;
   title: string;
   price: number;
 }

@@ -2,7 +2,7 @@ export interface Product {
   id: number;
   title: string;
   price: number;
-  count: number;
+  quantity: number;
   name: string;
   description?: string;
   created_at: string;
@@ -13,7 +13,7 @@ export interface ProductInfo {
   id: number;
   title: string;
   price: number;
-  count: number;
+  quantity: number;
   name: string;
   description: string;
   media: Media[];

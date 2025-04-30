@@ -32,7 +32,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface FormValues {
   title: string;
-  count: number;
+  quantity: number;
   price: number;
   category_id: number;
   media: Media[];
@@ -96,7 +96,7 @@ const Create = () => {
     setPreShowProductInfo({
       media: fetchedData.medias?.find((item) => item.order === 1) || null,
       title: processedData.title,
-      count: processedData.count,
+      quantity: processedData.quantity,
       price: processedData.price,
     });
 
@@ -246,7 +246,7 @@ const Create = () => {
                 {PRODUCT_COUNT_LABEL}
               </label>
               <input
-                {...register("count")}
+                {...register("quantity")}
                 className="styled-input"
                 type="number"
                 min={0}
