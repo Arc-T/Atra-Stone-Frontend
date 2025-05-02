@@ -69,10 +69,11 @@ const Login = () => {
         username: userDetails.username,
         code: data.code,
       })
-        .then((_) => {
-          if (userDetails.is_registered) window.location.replace(`${backUrl}`);
-
-          else {
+        .then((response) => {
+          if (userDetails.is_registered) {
+            localStorage.setItem("user", response.token);
+            window.location.replace(`${backUrl}`);
+          } else {
             localStorage.setItem("username", userDetails.username);
             window.location.replace(`/user/sign-up/?backUrl=${backUrl}`);
             // navigate(`/user/sign-up/?backUrl=${params.backUrl}`);

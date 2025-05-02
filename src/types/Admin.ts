@@ -77,3 +77,10 @@ export interface Media {
   extension: string;
   uploaded_at: string;
 }
+
+export interface User {
+  id: number;
+  name: string;
+  phone: string;
+  address: string;
+}

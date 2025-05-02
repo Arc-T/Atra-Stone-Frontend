@@ -11,7 +11,7 @@ interface FormValues {
 
 export default function Login() {
 
-  if (localStorage.getItem("token"))
+  if (localStorage.getItem("user"))
     return <Navigate to={`/${ADMIN_HOMEPAGE}`} />;
 
   const { state } = useLocation();

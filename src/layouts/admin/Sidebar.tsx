@@ -1,8 +1,8 @@
 import {
-  Award,
-  AwardFill,
   Bookmark,
   BookmarkFill,
+  Box2,
+  Box2Fill,
   Cart,
   CartFill,
   Dice3,
@@ -33,7 +33,7 @@ const Aside = ({ isOpen }: Props) => {
       icon: Bookmark,
       activeIcon: BookmarkFill,
     },
-    { label: "تگ ها", path: "tags", icon: Award, activeIcon: AwardFill },
+    { label: "خدمات", path: "services", icon: Box2, activeIcon: Box2Fill },
     {
       label: "ویژگی ها",
       path: "attributes",

@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { PRODUCT_DETAILS_API, PRODUCT_EDIT_PAGE } from "../../../types/url.ts";
+import { PRODUCT_DETAILS_API } from "../../../types/url.ts";
 import { generateUrl } from "../../../services/general.ts";
 import Table from "../../../components/Table.tsx";
 import { useFetchProducts } from "../../../hooks/useProducts.ts";
@@ -75,20 +74,10 @@ const List = () => {
               <td className="styled-table-cell">
                 {Number(product.price).toLocaleString()} تومان
               </td>
-              <td className="styled-table-cell">{product.count} عدد</td>
-              <td className="styled-table-cell">{product.created_at}</td>
+              <td className="styled-table-cell">{product.quantity} عدد</td>
+              <td className="styled-table-cell" dir="ltr">{product.created_at}</td>
               <td className="py-4 px-6">
                 <div className="flex justify-center items-center ms-2">
-                  <Link
-                    to={generateUrl(
-                      PRODUCT_EDIT_PAGE,
-                      { productId: product.id },
-                      "PAGE"
-                    )}
-                    className="bg-blue-500 text-white me-2 py-2 px-5 rounded-lg hover:bg-blue-600 shadow-md transition-all duration-150"
-                  >
-                    ویرایش
-                  </Link>
                   <button
                     onClick={() => {
                       onOpenModal({

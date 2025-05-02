@@ -66,25 +66,27 @@ const Create = () => {
       (item) => item.id === multiSelect.categoryId
     );
 
-    formBody.title =
-      category?.title +
-      " " +
-      category?.title_sequence
-        ?.split(",")
+    if (category?.title_sequence) {
+      const titleParts = category.title_sequence
+        .split(",") 
         .map((id) => {
-          const attribute = formBody.attributes.find(
-            (attr) => attr.id === Number(id.trim())
-          );
-          const value = attribute?.value;
-          return value && value.trim() !== ""
-            ? value
-            : `[${
-                fetchedData.attributes.find(
-                  (attr) => attr.id === Number(id.trim())
-                )?.title
-              }]`;
+          const trimmedId = Number(id.trim());
+          const attr = formBody.attributes.find((a) => a.id === trimmedId);
+          const value = attr?.value?.trim();
+
+          if (value) return value;
+
+          const fallback = fetchedData.attributes.find(
+            (a) => a.id === trimmedId
+          )?.title;
+          return fallback ? `[${fallback}]` : "";
         })
-        .join(" ");
+        .filter(Boolean);
+
+      formBody.title = `${category.title} ${titleParts.join(" ")}`.trim();
+    } else {
+      formBody.title = category?.title || "";
+    }
 
     return formBody;
   };

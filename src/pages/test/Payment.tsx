@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import ApiClient from "../../services/apiClient";
 import { PAYMENT_CREATE_API, ZARRINPAL_GATEWAY } from "../../types/url";
 import { AxiosError } from "axios";
+import { sendToBankGateway } from "../../hooks/usePayment";
 
 const demoItems = [
   { id: 1, name: "Item A", price: "$10" },
@@ -10,20 +11,7 @@ const demoItems = [
 ];
 
 export default function TestPaymentPage() {
-  const sendToBankGateway = () => {
-    const axiosInstance = new ApiClient(PAYMENT_CREATE_API);
 
-    axiosInstance
-      .postRequest<{ authority: string; code: number }>()
-      .then((data) => {
-        console.log(data);
-        window.location.replace(ZARRINPAL_GATEWAY + data.authority);
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
-        toast.error("SOMETHING WENT WRONG: " + error.message);
-      });
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-4">

@@ -50,7 +50,7 @@ const PreShowProduct = ({ product, onClose }: props) => {
                 <p className="text-md font-semibold text-gray-700">
                   {Number(product.price).toLocaleString()} تومان
                 </p>
-                <p className="text-md text-gray-500">{product.count} عدد</p>
+                <p className="text-md text-gray-500">{product.quantity} عدد</p>
               </div>
             </div>
           </div>

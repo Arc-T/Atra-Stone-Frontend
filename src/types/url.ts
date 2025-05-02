@@ -1,7 +1,7 @@
 // export const SERVER_URL = 'https://atrastones.com/api/v1'
 
-const BASE_URL = "http://localhost:8081/";
-// const BASE_URL = "https://api.atrastones.com/";
+// const BASE_URL = "http://localhost:8081/";
+const BASE_URL = "https://api.atrastones.com/";
 const API_VERSION = "v1/";
 
 export const SERVER_URL = BASE_URL;
@@ -15,7 +15,7 @@ export const ADMIN_HOMEPAGE = "admin/home/";
 export const USER_HOMEPAGE = "user/home";
 export const USER_LOGIN_PAGE = "user/home";
 export const USER_SIGN_IN_API = "users/sign-in";
-export const USER_SIGNUP_API = "user/sign-up";
+export const USER_SIGNUP_API = "users/sign-up";
 export const USER_LOGIN_API = "users/authenticate";
 export const USER_AUTHENTICATE_WITH_OTP_API = "users/login/otp";
 
@@ -58,3 +58,6 @@ export const CATEGORY_ATTRIBUTE_SHOW_API = "categories/{categoryId}/attributes";
 export const PAYMENT_CREATE_API = "payment/create";
 export const ZARRINPAL_GATEWAY = "https://payment.zarinpal.com/pg/StartPay/";
 export const ZARRINPAL_VERIFY = "payment/verify";
+
+/* ************************* ORDER ************************* */
+export const ORDER_CREATE_API = "order/create";

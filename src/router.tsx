@@ -8,7 +8,7 @@ import List from "./pages/admin/Products/List.tsx";
 import ProductIndex from "./pages/admin/Products/Index.tsx";
 import CustomerLayout from "./layouts/user/Rtl.tsx";
 import CategoryIndex from "./pages/admin/Categories/Index.tsx";
-import TagIndex from "./pages/admin/Tags/Index.tsx";
+import ServiceIndex from "./pages/admin/Services/Index.tsx";
 import AttributeIndex from "./pages/admin/Attributes/Index.tsx";
 import CheckToken from "./middleware/CheckToken.tsx";
 import Create from "./pages/admin/Products/Create.tsx";
@@ -20,7 +20,7 @@ import CustomProductsIndex from "./pages/user/CustomProducts/Index.tsx";
 import TestPaymentPage from "./pages/test/Payment.tsx";
 import PaymentResultPage from "./pages/test/PaymentResult.tsx";
 import Register from "./pages/user/Auth/Register.tsx";
-import PromptBuilder from "./pages/user/Cart/hhh.tsx";
+import OrderSummaryContent from "./pages/user/Cart/Shipment.tsx";
 // import Edit from "./pages/admin/Products/Edit.tsx";
 
 const router = createBrowserRouter([
@@ -59,8 +59,8 @@ const router = createBrowserRouter([
         element: <CategoryIndex />,
       },
       {
-        path: "tags",
-        element: <TagIndex />,
+        path: "services",
+        element: <ServiceIndex />,
       },
       {
         path: "attributes",
@@ -89,10 +89,6 @@ const router = createBrowserRouter([
     element: <PaymentResultPage />,
   },
   {
-    path: "/prompt",
-    element: <PromptBuilder />,
-  },
-  {
     element: <CustomerLayout />,
     children: [
       {
@@ -118,6 +114,10 @@ const router = createBrowserRouter([
       {
         path: "/checkout/cart/",
         element: <CartIndex />,
+      },
+      {
+        path: "/checkout/cart/summary",
+        element: <OrderSummaryContent/>,
       },
     ],
   },

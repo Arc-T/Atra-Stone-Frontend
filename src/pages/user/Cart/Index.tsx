@@ -7,10 +7,28 @@ import { Trash3Fill, CartXFill } from "react-bootstrap-icons";
 import { generateUrl } from "../../../services/general";
 import { PRODUCT_DETAILS_API } from "../../../types/url";
 import useCartStore from "../../../contexts/cartStore";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+
+interface FormValues {
+  title: string;
+  quantity: number;
+  price: number;
+  category_id: number;
+  description: string;
+}
 
 const Index = () => {
   const [cartProducts, setCartProducts] = useState([] as ProductInfo[]);
   const { removeFromCart } = useCartStore();
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<FormValues>();
+
+  const onSubmit: SubmitHandler<FormValues> = (formBody) => {
+    console.log(formBody);
+    if (localStorage.getItem("user")) navigate("/checkout/cart/summary");
+    else navigate("/user/login/?backUrl=/checkout/cart/summary");
+  };
 
   useEffect(() => {
     const products = localStorage
@@ -51,83 +69,91 @@ const Index = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Products List */}
-          <div className="lg:col-span-2 space-y-5">
-            {cartProducts.map((product) => (
-              <div
-                key={product.id}
-                className="flex items-center gap-4 border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition"
-              >
-                <img
-                  src={generateUrl(PRODUCT_DETAILS_API, {
-                    productId: product.id,
-                    productName: product.media[0].name,
-                  })}
-                  alt={product.name}
-                  className="w-24 h-24 object-cover rounded-lg border"
-                />
-                <div className="flex-1">
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    {product.title}
-                  </h2>
-                  <p className="text-base text-green-700 font-medium mt-2">
-                    {product.price.toLocaleString()} تومان
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleRemove(product.id)}
-                  className="text-red-500 hover:text-red-600 transition"
-                  title="حذف محصول"
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Products List */}
+            <div className="lg:col-span-2 space-y-5">
+              {cartProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="flex items-center gap-4 border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition"
                 >
-                  <Trash3Fill size={22} />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Summary */}
-          <div className="border border-gray-100 rounded-xl p-6 shadow sticky top-24 h-fit bg-white space-y-6">
-            <h2 className="text-xl font-bold text-center text-gray-800">
-              خلاصه سفارش
-            </h2>
-
-            <div className="space-y-4">
-              <p className="text-base font-medium text-gray-700">روش تحویل:</p>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3 p-3 border rounded-lg hover:border-cyan-500 transition cursor-pointer">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="post"
-                    className="accent-cyan-600"
+                  <img
+                    src={generateUrl(PRODUCT_DETAILS_API, {
+                      productId: product.id,
+                      productName: product.media[0].name,
+                    })}
+                    alt={product.name}
+                    className="w-24 h-24 object-cover rounded-lg border"
                   />
-                  <span className="text-gray-800">ارسال با پست</span>
-                </label>
-                <label className="flex items-center gap-3 p-3 border rounded-lg hover:border-cyan-500 transition cursor-pointer">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="in_person"
-                    className="accent-cyan-600"
-                  />
-                  <span className="text-gray-800">خرید حضوری (اصفهان، زرینشهر)</span>
-                </label>
-                <label className="flex items-center gap-3 p-3 border rounded-lg hover:border-cyan-500 transition cursor-pointer">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="snap"
-                    className="accent-cyan-600"
-                  />
-                  <span className="text-gray-800">
-                    ارسال با اسنپ (ویژه اصفهان)
-                  </span>
-                </label>
-              </div>
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold text-gray-800">
+                      {product.title}
+                    </h2>
+                    <p className="text-base text-green-700 font-medium mt-2">
+                      {product.price.toLocaleString()} تومان
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleRemove(product.id)}
+                    className="text-red-500 hover:text-red-600 transition"
+                    title="حذف محصول"
+                  >
+                    <Trash3Fill size={22} />
+                  </button>
+                </div>
+              ))}
             </div>
 
-            <div className="space-y-2">
+            {/* Summary */}
+            <div className="border border-gray-100 rounded-xl p-6 shadow sticky top-24 h-fit bg-white space-y-6">
+              <h2 className="text-xl font-bold text-center text-gray-800">
+                خلاصه سفارش
+              </h2>
+
+              <div className="space-y-4">
+                <p className="text-base font-medium text-gray-700">
+                  روش تحویل:
+                </p>
+                <div className="space-y-3">
+                  <label className="flex items-center gap-3 p-3 border rounded-lg hover:border-cyan-500 transition cursor-pointer">
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value="post"
+                      defaultChecked
+                      className="accent-cyan-600"
+                    />
+                    <span className="text-gray-800">ارسال با پست</span>
+                  </label>
+                  {/* <label className="flex items-center gap-3 p-3 border rounded-lg hover:border-cyan-500 transition cursor-pointer">
+                    <input
+                      type="radio"
+                      disabled
+                      name="delivery"
+                      value="in_person"
+                      className="accent-cyan-600"
+                    />
+                    <span className="text-gray-800">
+                      خرید حضوری (اصفهان، زرینشهر)
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border rounded-lg hover:border-cyan-500 transition cursor-pointer">
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value="snap"
+                      disabled
+                      className="accent-cyan-600"
+                    />
+                    <span className="text-gray-800">
+                      ارسال با اسنپ (ویژه اصفهان)
+                    </span>
+                  </label> */}
+                </div>
+              </div>
+
+              {/* <div className="space-y-2">
               <label
                 htmlFor="discountCode"
                 className="text-base font-medium text-gray-700"
@@ -145,23 +171,21 @@ const Index = () => {
                   اعمال
                 </button>
               </div>
-            </div>
+            </div> */}
 
-            <div className="flex justify-between text-gray-600 text-base">
-              <span>مجموع قیمت:</span>
-              <span className="font-semibold text-gray-900">
-                {totalPrice.toLocaleString()} تومان
-              </span>
-            </div>
+              <div className="flex justify-between text-gray-600 text-base">
+                <span>مجموع قیمت:</span>
+                <span className="font-semibold text-gray-900">
+                  {totalPrice.toLocaleString()} تومان
+                </span>
+              </div>
 
-            <button
-              onClick={() => toast.info("پرداخت فعال نیست.")}
-              className="bg-cyan-600 hover:bg-cyan-700 w-full text-white py-3 rounded-lg text-lg font-medium transition"
-            >
-              ثبت سفارش
-            </button>
+              <button className="bg-cyan-600 hover:bg-cyan-700 w-full text-white py-3 rounded-lg text-lg font-medium transition">
+                ثبت سفارش
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
       )}
     </div>
   );

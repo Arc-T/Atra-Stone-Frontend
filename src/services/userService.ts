@@ -15,13 +15,14 @@ export const authenticate = (body: { username: string }) => {
   }>(body);
 };
 
-export const register = (body: {
+export const registerUser = (body: {
   phone: string;
   name: string;
   password: string;
+  address: string;
 }) => {
   const apiClient = new ApiClient(USER_SIGNUP_API);
-  return apiClient.postRequest(body);
+  return apiClient.postRequest<{ token: string }>(body);
 };
 
 export const authenticateWithOtp = (body: {
@@ -29,7 +30,7 @@ export const authenticateWithOtp = (body: {
   code: string;
 }) => {
   const apiClient = new ApiClient(USER_AUTHENTICATE_WITH_OTP_API);
-  return apiClient.postRequest(body);
+  return apiClient.postRequest<{ token: string }>(body);
 };
 
 export const authenticateAdmin = (body: {
