@@ -17,8 +17,6 @@ import ProductShow from "./pages/user/EconomicProduct/Show.tsx";
 import AcademyIndex from "./pages/user/Academy/Index.tsx";
 import CartIndex from "./pages/user/Cart/Index.tsx";
 import CustomProductsIndex from "./pages/user/CustomProducts/Index.tsx";
-import TestPaymentPage from "./pages/test/Payment.tsx";
-import PaymentResultPage from "./pages/test/PaymentResult.tsx";
 import Register from "./pages/user/Auth/Register.tsx";
 import OrderSummaryContent from "./pages/user/Cart/Shipment.tsx";
 // import Edit from "./pages/admin/Products/Edit.tsx";
@@ -79,14 +77,6 @@ const router = createBrowserRouter([
   {
     path: "/user/sign-up/:backUrl?",
     element: <Register />,
-  },
-  {
-    path: "/payment",
-    element: <TestPaymentPage />,
-  },
-  {
-    path: "/payment/result/",
-    element: <PaymentResultPage />,
   },
   {
     element: <CustomerLayout />,

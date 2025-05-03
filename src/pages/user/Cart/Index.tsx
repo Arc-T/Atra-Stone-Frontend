@@ -22,7 +22,7 @@ const Index = () => {
   const [cartProducts, setCartProducts] = useState([] as ProductInfo[]);
   const { removeFromCart } = useCartStore();
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { handleSubmit } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = (formBody) => {
     console.log(formBody);

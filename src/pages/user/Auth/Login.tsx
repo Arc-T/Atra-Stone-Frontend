@@ -6,7 +6,7 @@ import {
   authenticate,
   authenticateWithOtp,
 } from "../../../services/userService";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
@@ -26,7 +26,6 @@ const Login = () => {
     username: "",
     is_registered: false,
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isSmsSent || timer === 0) return;

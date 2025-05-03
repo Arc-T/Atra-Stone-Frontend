@@ -9,12 +9,12 @@ const CheckToken = ({ children }: ProtectedRouteProps) => {
   const message = "ابتدا باید وارد سایت شوید !";
 
   const checkToken = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("atra-user");
     return !!token;
   };
 
   if (!checkToken()) {
-    return <Navigate to={"/user/login"} state={message} />;
+    return <Navigate to={"/admin/login"} state={message} />;
   }
 
   return <>{children}</>;

@@ -11,7 +11,7 @@ interface FormValues {
 
 export default function Login() {
 
-  if (localStorage.getItem("user"))
+  if (localStorage.getItem("atra-user"))
     return <Navigate to={`/${ADMIN_HOMEPAGE}`} />;
 
   const { state } = useLocation();

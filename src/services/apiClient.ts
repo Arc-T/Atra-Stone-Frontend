@@ -26,15 +26,11 @@ axiosInstance.interceptors.response.use(
 );
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("user");
+  const token =
+    localStorage.getItem("user") || localStorage.getItem("atra-user");
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
-  // console.log(config.headers);
-  // console.log(config.baseURL);
-  // console.log(config.url);
-  // console.log(config.auth);
-  // console.log(config.data);
   return config;
 });
 

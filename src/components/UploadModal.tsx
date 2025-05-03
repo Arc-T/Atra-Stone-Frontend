@@ -22,10 +22,10 @@ const UploadModal = ({ onUploadedFiles, onClose }: props) => {
 
     uploadMedia(form, (percentage) => {
       setProgress(percentage);
-      return onClose();
     }).then(() => {
       onUploadedFiles();
       setProgress(0);
+      return onClose();
     });
   };
 

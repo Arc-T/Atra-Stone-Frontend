@@ -49,7 +49,7 @@ const Create = () => {
   const [multiSelect, setMultiSelect] = useState({
     attributes: null as SelectValue,
     categoryId: 0,
-    tags: null as SelectValue,
+    // tags: null as SelectValue,
   });
 
   const processFormData = (formBody: FormValues) => {
@@ -68,7 +68,7 @@ const Create = () => {
 
     if (category?.title_sequence) {
       const titleParts = category.title_sequence
-        .split(",") 
+        .split(",")
         .map((id) => {
           const trimmedId = Number(id.trim());
           const attr = formBody.attributes.find((a) => a.id === trimmedId);
@@ -121,7 +121,7 @@ const Create = () => {
     attributes: [] as Attribute[],
     categories: [] as Category[],
     medias: [] as Media[],
-    tags: [] as Tag[],
+    // tags: [] as Tag[],
   });
 
   const [shouldShowProductConfirm, setShouldShowProductConfirm] =
@@ -152,7 +152,7 @@ const Create = () => {
         setFetchedData((prevData) => ({
           ...prevData,
           categories: data.categories,
-          tags: data.tags,
+          // tags: data.tags,
         }));
       }
     });
@@ -243,7 +243,7 @@ const Create = () => {
               />
             </div>
             {/* COUNT Input */}
-            <div className="flex flex-col w-1/12">
+            <div className="flex flex-col w-1/3">
               <label className="block text-sm font-medium text-gray-900">
                 {PRODUCT_COUNT_LABEL}
               </label>
@@ -256,9 +256,9 @@ const Create = () => {
               />
             </div>
             {/* PRICE Input */}
-            <div className="flex flex-col w-1/5">
+            <div className="flex flex-col w-1/3">
               <label className="block text-sm font-medium text-gray-900">
-                {PRODUCT_PRICE_LABEL}
+                {PRODUCT_PRICE_LABEL} (تومان)
               </label>
               <input
                 className="styled-input"
@@ -268,7 +268,7 @@ const Create = () => {
               />
             </div>
 
-            <div className="flex flex-col w-full">
+            {/* <div className="flex flex-col w-full">
               <label className="block text-sm font-medium text-gray-900 mt-1">
                 تگ ها
               </label>
@@ -293,7 +293,7 @@ const Create = () => {
                     "w-full py-2 pr-6 text-sm text-gray-500 bg-gray-100 border border-gray-200 rounded focus:border-gray-200 focus:ring-0 focus:outline-none",
                 }}
               />
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-row gap-4">
@@ -386,6 +386,7 @@ const Create = () => {
                             نمایش
                           </a>
                           <button
+                            type="button"
                             onClick={() =>
                               onOpenModal({
                                 id: media.name,
