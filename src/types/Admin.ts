@@ -38,6 +38,7 @@ export interface Attribute {
   category_id: number;
   type: string;
   is_filterable: boolean;
+  values: AttributeValue[];
 }
 
 export interface AttributeValue {
@@ -68,6 +69,7 @@ export interface Category {
   categories?: Category[];
   description: string;
   title_sequence?: string;
+  children: Category[];
 }
 
 export interface Media {
@@ -82,5 +84,72 @@ export interface User {
   id: number;
   name: string;
   phone: string;
+  gender: string;
   address: string;
+  userProvince: Province;
+}
+
+export interface Province {
+  name: string;
+}
+
+export interface UserLocalStorage {
+  id: number;
+  name: string;
+  phone: string;
+  address: string;
+  gender: string;
+}
+
+export interface Province {
+  id: number;
+  name: string;
+}
+
+export interface Order {
+  id: number;
+  price: number;
+  status: string;
+  created_at: string;
+}
+
+export interface OrderDetails {
+  id: number;
+  quantity: number;
+  price: number;
+  product: ProductTest;
+}
+
+export interface Payment {
+  id: number;
+  type: string;
+  price: number;
+  status: string;
+  authority: string;
+  message: string;
+  referenceId: string;
+  createdAt: string;
+}
+
+export interface ProductTest {
+  id: number;
+  productMedia: Media[];
+}
+
+export interface OrderFullInfo {
+  id: number;
+  sumPrice: number;
+  status: string;
+  created_at: string;
+  user: User;
+  orderDetails: OrderDetails[];
+  orderPayments: Payment[];
+}
+
+export interface CategoryFullInfo {
+  id: number;
+  title: string;
+  url: string;
+  description: string;
+  attributes: Attribute[];
 }

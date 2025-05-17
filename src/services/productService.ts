@@ -13,6 +13,7 @@ import {
   PRODUCT_CREATE_API,
   PRODUCT_DELETE_API,
   PRODUCT_LIST_API,
+  PRODUCT_LIST_BY_CATEGORY_API,
   PRODUCT_SHOW_API,
   PRODUCT_STORE_API,
 } from "../types/url";
@@ -99,4 +100,9 @@ export const storeProduct = (body: Object) => {
 export const getCustomProducts = (body: Object) => {
   const axiosInstance = new ApiClient(PRODUCT_STORE_API);
   return axiosInstance.postRequest(body);
+};
+
+export const getProductsByCategory = (categoryId: number) => {
+  const axiosInstance = new ApiClient(PRODUCT_LIST_BY_CATEGORY_API);
+  return axiosInstance.postRequest<Product[]>({ id: categoryId });
 };

@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import { ADMIN_HOMEPAGE } from "../../../types/url.ts";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAuth } from "../../../hooks/useUser.ts";
+import { useState } from "react";
 
 interface FormValues {
   phone: string;
@@ -10,12 +11,12 @@ interface FormValues {
 }
 
 export default function Login() {
-
-  if (localStorage.getItem("atra-user"))
+  if (localStorage.getItem("token"))
     return <Navigate to={`/${ADMIN_HOMEPAGE}`} />;
 
   const { state } = useLocation();
-
+  const [showMessage, setShowMessage] = useState(!!state?.message);
+  
   const { mutate: authenticateAdmin } = useAuth();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => authenticateAdmin(data);
@@ -26,10 +27,17 @@ export default function Login() {
     <>
       <ToastContainer position="top-left" rtl={true} />
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-6 lg:px-8">
-        {state && (
-          <span className={"bg-red-700 text-white p-3 rounded-lg"}>
-            {state}
-          </span>
+      {showMessage && state?.message && (
+          <div className="relative bg-red-600 text-white px-4 py-3 rounded-lg shadow-md mb-4 flex items-center justify-between">
+            <span>{state.message}</span>
+            <button
+              onClick={() => setShowMessage(false)}
+              className="text-white hover:text-gray-200 ml-4 text-xl font-bold focus:outline-none"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
         )}
         <div className="sm:mx-auto sm:w-full sm:max-w-sm my-6">
           <img

@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <div
-        className="relative w-full min-h-screen bg-cover bg-center flex items-center justify-center overflow-hidden"
+        className="w-full min-h-screen bg-cover bg-center flex items-center justify-center"
         style={{ backgroundImage: `url(${background})` }}
       >
         {/* Content Section (Product Cards) */}

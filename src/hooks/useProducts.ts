@@ -2,15 +2,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Product } from "../types/admin";
 import {
   getProducts,
+  getProductsByCategory,
   getUploadedMedia,
   showProductInfo,
 } from "../services/productService";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
-import {
-  DELETE_FAILED_MSG,
-  FETCH_FAILED_MSG,
-} from "../types/messages";
+import { DELETE_FAILED_MSG, FETCH_FAILED_MSG } from "../types/messages";
 
 export const useFetchProducts = () => {
   return useQuery<Product[]>({
@@ -37,3 +35,11 @@ export const useFetchMedia = () => {
       toast.error(`${DELETE_FAILED_MSG}\n${error.message}`),
   });
 };
+
+export const useFetchProductsByCategory = () =>
+  useMutation({
+    mutationFn: (id: number) => getProductsByCategory(id),
+    onError: () => {
+      toast.error("در دریافت اطلاعات خطایی رخ داده است !");
+    },
+  });

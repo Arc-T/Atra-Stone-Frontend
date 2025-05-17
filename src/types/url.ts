@@ -15,12 +15,16 @@ export const ADMIN_HOMEPAGE = "admin/home/";
 export const USER_HOMEPAGE = "user/home";
 export const USER_LOGIN_PAGE = "user/home";
 export const USER_SIGN_IN_API = "users/sign-in";
+export const USER_CREATE_API = "users/create";
 export const USER_SIGNUP_API = "users/sign-up";
 export const USER_LOGIN_API = "users/authenticate";
 export const USER_AUTHENTICATE_WITH_OTP_API = "users/login/otp";
 
+export const USER_ORDERS_API = "order/list";
+
 /* ************************* PRODUCT API ************************* */
 export const PRODUCT_LIST_API = "products/index";
+export const PRODUCT_LIST_BY_CATEGORY_API = "products/list";
 export const PRODUCT_STORE_API = "products/store";
 export const PRODUCT_CREATE_API = "products/create";
 export const PRODUCT_SHOW_API = "products/{productId}/show";
@@ -49,6 +53,8 @@ export const ATTRIBUTE_DELETE_API = "attributes/{attributeId}/delete";
 
 /* ************************* CATEGORIES ************************* */
 export const CATEGORY_INDEX_API = "categories/index";
+export const CATEGORY_LIST_API = "categories/list";
+export const CATEGORY_SHOW_API = "categories/{categoryId}/show";
 export const CATEGORY_DELETE_API = "categories/{categoryId}/delete";
 export const CATEGORY_STORE_API = "categories/store";
 export const CATEGORY_UPDATE_API = "categories/{categoryId}/update";
@@ -61,3 +67,4 @@ export const ZARRINPAL_VERIFY = "payment/verify";
 
 /* ************************* ORDER ************************* */
 export const ORDER_CREATE_API = "order/create";
+export const ORDER_SHOW_API = "order/{orderId}/show";

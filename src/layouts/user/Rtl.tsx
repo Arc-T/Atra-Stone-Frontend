@@ -1,38 +1,42 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+
+function getThemeColor(pathname: string): string {
+  if (pathname.startsWith("/economic-products")) return "bg-emerald-700";
+  if (pathname.startsWith("/custom-products")) return "bg-red-950";
+  if (pathname.startsWith("/academy")) return "bg-sky-600";
+  return "bg-slate-900";
+}
 
 export default function Rtl() {
-  const [color, setColor] = useState("");
-
   const location = useLocation();
+  const [color, setColor] = useState(() => getThemeColor(location.pathname));
 
   useEffect(() => {
-    if (location.pathname.startsWith("/economic-products"))
-      setColor("bg-emerald-700");
-    else if (location.pathname.startsWith("/custom-products"))
-      setColor("bg-red-950");
-    else if (location.pathname.startsWith("/academy")) setColor("bg-sky-600");
-    else {
-      setColor("bg-slate-900");
-    }
+    setColor(getThemeColor(location.pathname));
   }, [location.pathname]);
 
   return (
-    <div
-      className="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex flex-col"
-      // style={{ backgroundImage: `url(${background})` }}
-    >
-     <ToastContainer position="top-left" bodyClassName={"toast-body"} rtl={true} />
-      <Navbar theme={color} />
-      {/* <div className="relative isolate px-6 pt-14 lg:px-8"> */}
-      <main className="flex-grow bg-white">
-        <Outlet />
-      </main>
-      {/* </div> */}
+    <div className="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex flex-col">
+      {/* Toasts */}
+      <ToastContainer
+        position="top-left"
+        bodyClassName="toast-body"
+        rtl={true}
+      />
+      <header className={`${color}`}>
+        <Navbar />
+      </header>
+      <div className="flex flex-1 min-h-0">
+        <main className="flex-1 bg-white">
+          <Outlet />
+        </main>
+      </div>
 
+      {/* Footer */}
       <Footer theme={color} />
     </div>
   );

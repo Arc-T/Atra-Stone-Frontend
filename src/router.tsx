@@ -10,8 +10,12 @@ import CustomerLayout from "./layouts/user/Rtl.tsx";
 import CategoryIndex from "./pages/admin/Categories/Index.tsx";
 import ServiceIndex from "./pages/admin/Services/Index.tsx";
 import AttributeIndex from "./pages/admin/Attributes/Index.tsx";
-import CheckToken from "./middleware/CheckToken.tsx";
 import Create from "./pages/admin/Products/Create.tsx";
+import ProfileLayout from "./pages/user/Profile/Layout.tsx";
+import ProfileIndex from "./pages/user/Profile/Index.tsx";
+import ProfileOrder from "./pages/user/Profile/Order/Index.tsx";
+import ProfileOrderInfo from "./pages/user/Profile/Order/Show.tsx";
+import PaymentResult from "./pages/user/Payment/Result.tsx";
 import ProductsList from "./pages/user/EconomicProduct/Index.tsx";
 import ProductShow from "./pages/user/EconomicProduct/Show.tsx";
 import AcademyIndex from "./pages/user/Academy/Index.tsx";
@@ -19,6 +23,7 @@ import CartIndex from "./pages/user/Cart/Index.tsx";
 import CustomProductsIndex from "./pages/user/CustomProducts/Index.tsx";
 import Register from "./pages/user/Auth/Register.tsx";
 import OrderSummaryContent from "./pages/user/Cart/Shipment.tsx";
+import CheckToken from "./middleware/CheckToken.tsx";
 // import Edit from "./pages/admin/Products/Edit.tsx";
 
 const router = createBrowserRouter([
@@ -79,6 +84,10 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
+    path: "/payment/result",
+    element: <PaymentResult />,
+  },
+  {
     element: <CustomerLayout />,
     children: [
       {
@@ -86,12 +95,34 @@ const router = createBrowserRouter([
         element: <CustomerHome />,
       },
       {
-        path: "/economic-products",
+        path: "/economic-products/category/:parent/:child",
         element: <ProductsList />,
       },
       {
         path: "/economic-products/:productId/details",
         element: <ProductShow />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <CheckToken>
+            <ProfileLayout />
+          </CheckToken>
+        ),
+        children: [
+          {
+            index: true,
+            element: <ProfileIndex />,
+          },
+          {
+            path: "order",
+            element: <ProfileOrder />,
+          },
+          {
+            path: "order/:id/show",
+            element: <ProfileOrderInfo />,
+          },
+        ],
       },
       {
         path: "/custom-products",
@@ -107,7 +138,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/checkout/cart/summary",
-        element: <OrderSummaryContent/>,
+        element: <OrderSummaryContent />,
       },
     ],
   },

@@ -16,10 +16,15 @@ interface FormValues {
 }
 
 const Login = () => {
-  const [timer, setTimer] = useState(180);
+  const [timer, setTimer] = useState(120);
   const [isSmsSent, setIsSmsSent] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>();
   const [searchParams] = useSearchParams();
   const backUrl = searchParams.get("backUrl");
   const [userDetails, setUserDetails] = useState({
@@ -38,31 +43,40 @@ const Login = () => {
   }, [isSmsSent, timer]);
 
   const handleResendCode = () => {
-    setTimer(180);
-    console.log("Resending code...");
+    if (userDetails.username) {
+      sendSms(userDetails.username);
+      setTimer(120);
+    } else {
+      toast.error("شماره تلفن یافت نشد.");
+    }
   };
 
   const handleBack = () => {
     setIsSmsSent(false);
-    setTimer(180);
+    setTimer(120);
     reset({ username: "" });
+  };
+
+  const sendSms = (phone: string) => {
+    setIsSmsSent(true);
+    authenticate({ username: phone })
+      .then((response) => {
+        reset();
+        setTimer(response.ttl);
+        setUserDetails({
+          username: response.phone,
+          is_registered: response.is_registered,
+        });
+      })
+      .catch((error: AxiosError) =>
+        toast.error("خطا در ارسال پیامک: " + error.message)
+      );
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     if (!isSmsSent) {
-      authenticate({ username: data.username })
-        .then((response) => {
-          reset();
-          setIsSmsSent(true);
-          setTimer(response.ttl);
-          setUserDetails({
-            username: response.phone,
-            is_registered: response.is_registered,
-          });
-        })
-        .catch((error: AxiosError) =>
-          toast.error("خطا در ارسال پیامک: " + error.message)
-        );
+      setIsSmsSent(true);
+      sendSms(data.username);
     } else {
       authenticateWithOtp({
         username: userDetails.username,
@@ -70,7 +84,8 @@ const Login = () => {
       })
         .then((response) => {
           if (userDetails.is_registered) {
-            localStorage.setItem("user", response.token);
+            localStorage.setItem("user", JSON.stringify(response.user_info));
+            localStorage.setItem("token", response.token);
             window.location.replace(`${backUrl}`);
           } else {
             localStorage.setItem("username", userDetails.username);
@@ -112,15 +127,24 @@ const Login = () => {
           {!isSmsSent ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  شماره موبایل
-                </label>
                 <input
-                  {...register("username")}
+                  {...register("username", {
+                    required: "شماره موبایل الزامی است",
+                    pattern: {
+                      value: /^09\d{9}$/,
+                      message: "شماره موبایل معتبر نیست",
+                    },
+                  })}
                   type="tel"
-                  className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                  placeholder="شماره موبایل"
+                  className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 text-center"
                 />
               </div>
+              {errors.username && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.username.message}
+                </p>
+              )}
               <button
                 type="submit"
                 className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
@@ -161,7 +185,7 @@ const Login = () => {
                   type="text"
                   inputMode="numeric"
                   maxLength={5}
-                  placeholder="کد 5 رقمی"
+                  placeholder="کد 4 رقمی"
                   className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 tracking-widest text-center"
                 />
               </div>

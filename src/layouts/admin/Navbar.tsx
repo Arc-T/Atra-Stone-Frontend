@@ -14,7 +14,7 @@ export default function Navbar({ toggleSidebar }: Props) {
 
   const logoutEvent = () => {
     localStorage.removeItem("token");
-    navigate("/user/login");
+    navigate("/admin/login");
   };
 
   return (

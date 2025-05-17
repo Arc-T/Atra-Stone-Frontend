@@ -19,7 +19,7 @@ import {
 } from "../../../types/messages";
 import { MEDIA_SHOW_URL } from "../../../types/url";
 import UploadModal from "../../../components/UploadModal";
-import { Category, Attribute, Tag, Media } from "../../../types/admin";
+import { Category, Attribute, Media } from "../../../types/admin";
 import { ArrowClockwise, Plus } from "react-bootstrap-icons";
 import useModalStore from "../../../contexts/modalStore";
 import { DeleteModal } from "../../../components/DeleteModal";
@@ -66,6 +66,8 @@ const Create = () => {
       (item) => item.id === multiSelect.categoryId
     );
 
+    if (category) formBody.category_id = category.id;
+
     if (category?.title_sequence) {
       const titleParts = category.title_sequence
         .split(",")
@@ -87,6 +89,7 @@ const Create = () => {
     } else {
       formBody.title = category?.title || "";
     }
+    console.log(formBody);
 
     return formBody;
   };

@@ -1,10 +1,9 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-import { API_ENDPOINT, USER_LOGIN_PAGE } from "../types/url";
-import { useNavigate } from "react-router-dom";
+import { API_ENDPOINT } from "../types/url";
 
 const axiosInstance = axios.create({
   baseURL: API_ENDPOINT,
-  timeout: 2000,
+  timeout: 5000,
 });
 
 axiosInstance.interceptors.response.use(
@@ -13,23 +12,28 @@ axiosInstance.interceptors.response.use(
   },
   (error: AxiosError) => {
     const axiosError = error as AxiosError;
+    console.log(axiosError.cause);
+    console.log(axiosError.message);
+    console.log(axiosError.code);
+    // if (axiosError.response?.status === 403) {
+    //   localStorage.removeItem("token");
+    //   const navigate = useNavigate();
 
-    if (axiosError.response?.status === 403) {
-      localStorage.removeItem("token");
-      const navigate = useNavigate();
-
-      navigate(USER_LOGIN_PAGE);
-    }
+    //   navigate(USER_LOGIN_PAGE);
+    // }
 
     return Promise.reject(error);
   }
 );
 
 axiosInstance.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem("user") || localStorage.getItem("atra-user");
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
+  } else {
+    console.log(
+      "________________________ TOKEN IS NOT SET ________________________"
+    );
   }
   return config;
 });
@@ -51,6 +55,12 @@ class ApiClient {
   }
 
   getRequest<T>(headers?: object) {
+    return axiosInstance
+      .get<T>(this.endpoint, headers ? { headers } : undefined)
+      .then((response) => response.data);
+  }
+
+  getRequestBody<T>(requestBody?: object, headers?: object) {
     return axiosInstance
       .get<T>(this.endpoint, headers ? { headers } : undefined)
       .then((response) => response.data);

@@ -16,7 +16,7 @@ export const useAuth = () => {
         password: requestBody.password,
       }),
     onSuccess: (response) => {
-      localStorage.setItem("atra-user", response.token);
+      localStorage.setItem("admin", response.token);
       navigate(`/${ADMIN_HOMEPAGE}`);
     },
     onError: (error: AxiosError) => {

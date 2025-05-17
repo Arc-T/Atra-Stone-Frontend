@@ -14,18 +14,12 @@ import { generateUrl } from "../../../services/general";
 import { sendToBankGateway } from "../../../hooks/usePayment";
 
 const OrderSummaryContent = () => {
-  const [fetchedData, setFetchedData] = useState<{
-    order_id: number;
-    delivery_cost: number;
-    total_price: number;
-    user_info: User;
-    products: Product[];
-  }>({
-    order_id: 1000,
+  const [fetchedData, setFetchedData] = useState({
+    order_id: 0,
     delivery_cost: 0,
     total_price: 0,
     user_info: {} as User,
-    products: [],
+    products: [] as Product[],
   });
 
   const [showProducts, setShowProducts] = useState(false);
@@ -45,31 +39,33 @@ const OrderSummaryContent = () => {
         id: Number(data),
         quantity: 1,
       }));
-    if (products)
-      createOrder({
-        products: products,
-        delivery: 1,
-      })
-        .then((response) => {
-          setFetchedData({
-            order_id: response.order_id,
-            delivery_cost: response.delivery_cost,
-            total_price: response.total_price,
-            user_info: response.user_info,
-            products: response.products,
-          });
+    const userStringInfo = localStorage.getItem("user");
+    if (userStringInfo) {
+      const userInfo = JSON.parse(userStringInfo) as User;
+      if (products)
+        createOrder({
+          products: products,
+          delivery: 1,
         })
-        .catch((error: AxiosError) => {
-          toast.error("در ساخت سفارش خطایی رخ داده است!");
-          console.log(error.message);
-        });
+          .then((response) => {
+            setFetchedData({
+              order_id: response.order_id,
+              delivery_cost: response.delivery_cost,
+              total_price: response.total_price,
+              products: response.products,
+              user_info: userInfo,
+            });
+          })
+          .catch((error: AxiosError) => {
+            toast.error("در ساخت سفارش خطایی رخ داده است!");
+            console.log(error.message);
+          });
+    }
   }, []);
 
   return (
     <div className="max-w-4xl mx-auto my-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">
-        خلاصه سفارش#{10000 + fetchedData.order_id}
-      </h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">خلاصه سفارش#</h1>
 
       {/* User Details */}
       <div className="bg-white shadow rounded-lg p-4 mb-6">
